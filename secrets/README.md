@@ -12,24 +12,23 @@
 ## 例
 
 ```yaml
-ssh:
-  id_github_rsa: |
-    -----BEGIN RSA PRIVATE KEY-----
-    ...
-    -----END RSA PRIVATE KEY-----
-  id_rsa: |
-    -----BEGIN RSA PRIVATE KEY-----
-    ...
-    -----END RSA PRIVATE KEY-----
-  mirai-server: |
-    -----BEGIN OPENSSH PRIVATE KEY-----
-    ...
-    -----END OPENSSH PRIVATE KEY-----
-  config: |
-    Host github.com
-      HostName github.com
-      User git
-      IdentityFile ~/.ssh/id_github_rsa
+ssh_config: |
+  Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_github_rsa
+ssh_id_github_rsa: |
+  -----BEGIN RSA PRIVATE KEY-----
+  ...
+  -----END RSA PRIVATE KEY-----
+ssh_id_rsa: |
+  -----BEGIN RSA PRIVATE KEY-----
+  ...
+  -----END RSA PRIVATE KEY-----
+ssh_mirai_server: |
+  -----BEGIN OPENSSH PRIVATE KEY-----
+  ...
+  -----END OPENSSH PRIVATE KEY-----
 ```
 
 現在の Nix 設定では次を配置する:

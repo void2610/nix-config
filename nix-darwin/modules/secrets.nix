@@ -12,25 +12,25 @@ in
   } // lib.optionalAttrs hasSecretsFile {
     defaultSopsFile = secretsFile;
     secrets = {
-      "ssh/config" = {
+      ssh_config = {
         path = "${homeDir}/.ssh/config";
         owner = username;
         mode = "600";
       };
 
-      "ssh/id_github_rsa" = {
+      ssh_id_github_rsa = {
         path = "${homeDir}/.ssh/id_github_rsa";
         owner = username;
         mode = "600";
       };
 
-      "ssh/id_rsa" = {
+      ssh_id_rsa = {
         path = "${homeDir}/.ssh/id_rsa";
         owner = username;
         mode = "600";
       };
 
-      "ssh/mirai-server" = {
+      ssh_mirai_server = {
         path = "${homeDir}/.ssh/mirai-server";
         owner = username;
         mode = "600";
