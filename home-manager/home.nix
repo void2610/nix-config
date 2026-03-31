@@ -10,7 +10,7 @@
 
   # --- インストールするパッケージ（将来 Homebrew から移行するもの） ---
   home.packages = with pkgs; [
-    # 現時点では最小限（徐々に移行予定）
+    dotnet-sdk # Unity プロジェクトのフォーマットチェックで使用
   ];
 
   # home-manager 自身による管理を有効化
