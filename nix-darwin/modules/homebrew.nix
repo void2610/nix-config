@@ -1,4 +1,4 @@
-{ lib, profile, ... }:
+{ profile, ... }:
 let
   commonBrews = [
     "eza"
@@ -39,44 +39,59 @@ let
     "zed"
   ];
 
+  gameBrews = [ ];
+  workBrews = [ ];
+  serverBrews = [ ];
+
+  gameCasks = [
+    "affinity"
+    "discord"
+    "obs"
+    "rider"
+    "sf-symbols"
+    "steam"
+    "typeless"
+    "unity-hub"
+  ];
+
+  workCasks = [ ];
+
+  serverCasks = [
+    "unity-hub"
+  ];
+
+  commonMasApps = {
+    "Amphetamine" = 937984704;
+  };
+
+  desktopMasApps = {
+    "RunCat" = 1429033973;
+  };
+
+  gameMasApps = commonMasApps // desktopMasApps;
+  workMasApps = commonMasApps // desktopMasApps;
+
+  serverMasApps = commonMasApps;
+
   profileBrews =
     {
-      game = [ ];
-      work = [ ];
-      server = [ ];
+      game = gameBrews;
+      work = workBrews;
+      server = serverBrews;
     }.${profile} or [ ];
 
   profileCasks =
     {
-      game = [
-        "affinity"
-        "discord"
-        "obs"
-        "rider"
-        "sf-symbols"
-        "steam"
-        "typeless"
-        "unity-hub"
-      ];
-      work = [
-      ];
-      server = [
-        "unity-hub"
-      ];
+      game = gameCasks;
+      work = workCasks;
+      server = serverCasks;
     }.${profile} or [ ];
-
-  desktopMasApps = {
-    "Amphetamine" = 937984704;
-    "RunCat" = 1429033973;
-  };
 
   profileMasApps =
     {
-      game = desktopMasApps;
-      work = desktopMasApps;
-      server = {
-        "Amphetamine" = 937984704;
-      };
+      game = gameMasApps;
+      work = workMasApps;
+      server = serverMasApps;
     }.${profile} or { };
 in
 {
