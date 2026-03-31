@@ -24,6 +24,7 @@ let
     "bitwarden"
     "claude-code"
     "codex"
+    "displaylink"
     "github"
     "hiddenbar"
     "karabiner-elements"
