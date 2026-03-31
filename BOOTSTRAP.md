@@ -34,6 +34,7 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
 ```
 
 これで `sops-nix` により SSH secrets が `~/.ssh` に復元される。
+別ホストを使う場合は `.#game-dev` / `.#work-dev` / `.#server-node` に切り替える。
 
 ## 5. dotfiles をリンクする
 

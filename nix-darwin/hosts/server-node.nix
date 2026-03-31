@@ -4,7 +4,7 @@
     ../modules/homebrew.nix
   ];
 
-  networking.hostName = "Macintosh";
+  networking.hostName = "server-node";
 
   system.primaryUser = "shuya";
 

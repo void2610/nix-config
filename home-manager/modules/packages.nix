@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, profile, ... }:
 let
   neofetch = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "neofetch";

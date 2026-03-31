@@ -20,7 +20,6 @@
     # nix-homebrew: Homebrew の宣言的管理
     nix-homebrew = {
       url = "github:zhaofengli/nix-homebrew";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # sops-nix: 暗号化した secrets の配置
@@ -32,43 +31,74 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix }:
   let
-    hostname = "Macintosh";
     username = "shuya";
     system = "aarch64-darwin";
+    mkDarwinConfiguration =
+      {
+        configName,
+        profile,
+      }:
+      nix-darwin.lib.darwinSystem {
+        inherit system;
+        specialArgs = {
+          inherit profile username;
+        };
+        modules = [
+          ./nix-darwin/hosts/${configName}.nix
+
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              enableRosetta = false;
+              user = username;
+              autoMigrate = true;
+            };
+          }
+
+          sops-nix.darwinModules.sops
+
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              extraSpecialArgs = {
+                inherit profile;
+              };
+              users.${username} = {
+                imports = [
+                  ./home-manager/users/${username}.nix
+                  (./home-manager/profiles + "/${profile}.nix")
+                ];
+              };
+            };
+          }
+        ];
+      };
   in
   {
-    darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
-      inherit system;
-      modules = [
-        # nix-darwin の基本設定
-        ./nix-darwin/hosts/${hostname}.nix
+    darwinConfigurations = {
+      Macintosh = mkDarwinConfiguration {
+        configName = "Macintosh";
+        profile = "game";
+      };
 
-        # nix-homebrew モジュール
-        nix-homebrew.darwinModules.nix-homebrew
-        {
-          nix-homebrew = {
-            enable = true;
-            enableRosetta = false; # Apple Silicon のみ使用
-            user = username;
-            # 既存の Homebrew インストールを自動移行
-            autoMigrate = true;
-          };
-        }
+      "game-dev" = mkDarwinConfiguration {
+        configName = "game-dev";
+        profile = "game";
+      };
 
-        # sops-nix モジュール
-        sops-nix.darwinModules.sops
+      "work-dev" = mkDarwinConfiguration {
+        configName = "work-dev";
+        profile = "work";
+      };
 
-        # home-manager を nix-darwin に統合
-        home-manager.darwinModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            backupFileExtension = "backup";
-            users.${username} = import ./home-manager/users/${username}.nix;
-          };
-        }
-      ];
+      "server-node" = mkDarwinConfiguration {
+        configName = "server-node";
+        profile = "server";
+      };
     };
   };
 }

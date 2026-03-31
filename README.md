@@ -1,7 +1,7 @@
 # .nix-config
 
 Nix を使った macOS 設定管理リポジトリです。
-共通モジュールを積み上げて、今後 `game` / `work` / `server` のような複数ホストへ広げやすい構造にしています。
+共通モジュールを積み上げて、`game` / `work` / `server` の複数ホストを分けて運用できる構造にしています。
 
 ## ディレクトリ構成
 
@@ -14,15 +14,24 @@ Nix を使った macOS 設定管理リポジトリです。
 │   │   ├── packages.nix
 │   │   ├── shell.nix
 │   │   └── tmux.nix
+│   ├── profiles/
+│   │   ├── game.nix
+│   │   ├── server.nix
+│   │   └── work.nix
 │   └── users/
 │       └── shuya.nix
 └── nix-darwin/
     ├── hosts/
-    │   └── Macintosh.nix
+    │   ├── Macintosh.nix
+    │   ├── game-dev.nix
+    │   ├── server-node.nix
+    │   └── work-dev.nix
     └── modules/
+        ├── base.nix
         ├── defaults.nix
         ├── homebrew.nix
         ├── nix-core.nix
+        ├── secrets.nix
         └── security.nix
 ```
 
@@ -31,7 +40,24 @@ Nix を使った macOS 設定管理リポジトリです。
 - インストールや有効化に関わるものは `nix-config` で管理する
 - 単なる設定ファイルは基本的に `dotfiles` 側で管理する
 - Homebrew は `nix-homebrew` 経由で宣言的に管理する
-- `hosts/` と `users/` を増やして複数 Mac へ展開する
+- ホスト固有情報は `hosts/` に置き、用途差分は `profiles/` に置く
+
+## ホスト構成
+
+| flake target | profile | 想定用途 |
+|---|---|---|
+| `.#Macintosh` | `game` | 現在のメイン機 |
+| `.#game-dev` | `game` | ゲーム開発メイン機 |
+| `.#work-dev` | `work` | 会社用開発機 |
+| `.#server-node` | `server` | 常時稼働のサブ機。LLM agent と自動化実行用 |
+
+`hosts/` はホスト名やホームディレクトリのような固有値だけを持ちます。インストールアプリや shell の差分は `profile` で切り替えます。
+
+## profile ごとの差分
+
+- `game`: Unity / Rider / Steam / OBS など、制作と趣味の GUI を含む
+- `work`: 開発系 GUI を中心にし、ゲーム用途のアプリは外す
+- `server`: 常時稼働向け。LLM agent、Unity 開発、ブラウザ自動化に必要な GUI とランタイムを残す
 
 ## 使用ツール
 
@@ -69,7 +95,7 @@ git clone https://github.com/void2610/dotfiles.git ~/dotfiles
 scutil --get LocalHostName
 ```
 
-ホストごとのエントリは `nix-darwin/hosts/` に置きます。新しい Mac を追加するときは、既存ホストをベースに新しい host module を作ります。
+新しい Mac を追加するときは `nix-darwin/hosts/` に host file を追加し、`flake.nix` の `darwinConfigurations` に target を足します。
 
 ### 4. nix-darwinの初回インストール
 
@@ -106,6 +132,12 @@ cd ~/dotfiles
 ```bash
 cd ~/.nix-config
 sudo darwin-rebuild switch --flake .#Macintosh
+```
+
+別ホストでは target 名を切り替えます。例:
+
+```bash
+sudo darwin-rebuild switch --flake .#work-dev
 ```
 
 ### パッケージ・ツールのバージョン更新
@@ -148,8 +180,9 @@ sudo darwin-rebuild --rollback
 - 現在使っている Unity Editor は `6000.3.10f1` (`Unity 6.3 LTS`) です。
 - 現在選択している Unity モジュールは `Mac Build Support (IL2CPP)`, `Web Build Support`, `Windows Build Support (Mono)`, `日本語` です。
 
-## 今後の拡張
+## 追加するとき
 
-- `nix-darwin/hosts/` に `game`, `work`, `server` 用ホストを追加
-- `home-manager/users/` にユーザー別エントリを追加
-- 共通化したい設定は `modules/` に寄せる
+1. `nix-darwin/hosts/` に新しい host file を作る
+2. `flake.nix` の `darwinConfigurations` に target を足す
+3. 必要なら `home-manager/profiles/` と `nix-darwin/modules/homebrew.nix` に差分を追加する
+4. 共通化できる差分は `modules/` 側へ戻す
