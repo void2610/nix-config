@@ -35,7 +35,7 @@
       inherit system;
       modules = [
         # nix-darwin の基本設定
-        ./nix-darwin/configuration.nix
+        ./nix-darwin/hosts/${hostname}.nix
 
         # nix-homebrew モジュール
         nix-homebrew.darwinModules.nix-homebrew
@@ -56,7 +56,7 @@
             useGlobalPkgs = true;
             useUserPackages = true;
             backupFileExtension = "backup";
-            users.${username} = import ./home-manager/home.nix;
+            users.${username} = import ./home-manager/users/${username}.nix;
           };
         }
       ];

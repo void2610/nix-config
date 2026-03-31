@@ -1,18 +1,37 @@
 # .nix-config
 
-Nixを使ったMacの設定管理リポジトリ。
+Nix を使った macOS 設定管理リポジトリです。
+共通モジュールを積み上げて、今後 `game` / `work` / `server` のような複数ホストへ広げやすい構造にしています。
 
-## 構成
+## ディレクトリ構成
 
-```
+```text
 .nix-config/
-├── flake.nix                 # nixpkgs / nix-darwin / home-manager / nix-homebrew の統合
+├── flake.nix
 ├── home-manager/
-│   └── home.nix              # ユーザー環境（パッケージ等）
+│   ├── modules/
+│   │   ├── git.nix
+│   │   ├── packages.nix
+│   │   ├── shell.nix
+│   │   └── tmux.nix
+│   └── users/
+│       └── shuya.nix
 └── nix-darwin/
-    ├── configuration.nix     # macOS システム設定（Dock / Finder / Touch ID 等）
-    └── homebrew.nix          # Homebrew パッケージ管理
+    ├── hosts/
+    │   └── Macintosh.nix
+    └── modules/
+        ├── defaults.nix
+        ├── homebrew.nix
+        ├── nix-core.nix
+        └── security.nix
 ```
+
+## 方針
+
+- インストールや有効化に関わるものは `nix-config` で管理する
+- 単なる設定ファイルは基本的に `dotfiles` 側で管理する
+- Homebrew は `nix-homebrew` 経由で宣言的に管理する
+- `hosts/` と `users/` を増やして複数 Mac へ展開する
 
 ## 使用ツール
 
@@ -42,19 +61,19 @@ nix --version
 git clone https://github.com/void2610/.nix-config.git ~/.nix-config
 ```
 
-### 3. ホスト名の確認・変更
+### 3. ホスト名の確認
 
 ```bash
 scutil --get LocalHostName
 ```
 
-`flake.nix` と `nix-darwin/configuration.nix` の `hostname` / `networking.hostName` を実際のホスト名に合わせて変更する。
+ホストごとのエントリは `nix-darwin/hosts/` に置きます。新しい Mac を追加するときは、既存ホストをベースに新しい host module を作ります。
 
 ### 4. nix-darwinの初回インストール
 
 ```bash
 cd ~/.nix-config
-sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
 ```
 
 ## 日常的な使い方
@@ -63,7 +82,7 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
 
 ```bash
 cd ~/.nix-config
-sudo darwin-rebuild switch --flake .
+sudo darwin-rebuild switch --flake .#Macintosh
 ```
 
 ### パッケージ・ツールのバージョン更新
@@ -71,7 +90,7 @@ sudo darwin-rebuild switch --flake .
 ```bash
 cd ~/.nix-config
 nix flake update
-sudo darwin-rebuild switch --flake .
+sudo darwin-rebuild switch --flake .#Macintosh
 ```
 
 ### ロールバック
@@ -84,3 +103,9 @@ sudo darwin-rebuild --rollback
 
 - macOS 15 (Sequoia)
 - Apple Silicon (aarch64-darwin)
+
+## 今後の拡張
+
+- `nix-darwin/hosts/` に `game`, `work`, `server` 用ホストを追加
+- `home-manager/users/` にユーザー別エントリを追加
+- 共通化したい設定は `modules/` に寄せる

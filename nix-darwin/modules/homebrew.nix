@@ -4,9 +4,7 @@
   homebrew = {
     enable = true;
 
-    # 未登録パッケージの自動アンインストール
     onActivation.cleanup = "zap";
-    # brew コマンド実行時の自動更新を無効化（Nix で管理）
     global.autoUpdate = false;
 
     brews = [
