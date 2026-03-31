@@ -59,6 +59,7 @@ nix --version
 
 ```bash
 git clone https://github.com/void2610/.nix-config.git ~/.nix-config
+git clone https://github.com/void2610/dotfiles.git ~/dotfiles
 ```
 
 ### 3. ホスト名の確認
@@ -75,6 +76,17 @@ scutil --get LocalHostName
 cd ~/.nix-config
 sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
 ```
+
+### 5. dotfilesのリンク
+
+```bash
+cd ~/dotfiles
+./install.sh
+```
+
+### 6. 手動インストールアプリの確認
+
+宣言化できないアプリは `~/dotfiles/MANUAL_APPS.md` を見て個別に復元します。
 
 ## 日常的な使い方
 
@@ -103,6 +115,18 @@ sudo darwin-rebuild --rollback
 
 - macOS 15 (Sequoia)
 - Apple Silicon (aarch64-darwin)
+
+## 再現できるもの
+
+- Homebrew formula / cask / MAS アプリ
+- macOS システム設定
+- `home-manager` で有効化している CLI / shell 環境
+- `dotfiles` に置いている各種設定ファイル
+
+## 手動で戻すもの
+
+- `dotfiles/MANUAL_APPS.md` にあるアプリ
+- アプリのログイン状態、ライセンス、同期データ
 
 ## 今後の拡張
 
