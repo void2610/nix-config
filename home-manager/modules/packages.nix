@@ -33,5 +33,6 @@ in
   home.packages = with pkgs; [
     dotnet-sdk
     neofetch
+    nodejs_22
   ];
 }

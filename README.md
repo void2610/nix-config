@@ -122,11 +122,20 @@ sudo darwin-rebuild --rollback
 - macOS システム設定
 - `home-manager` で有効化している CLI / shell 環境
 - `dotfiles` に置いている各種設定ファイル
+- Node.js 22 系の基準実行環境
 
 ## 手動で戻すもの
 
 - `dotfiles/MANUAL_APPS.md` にあるアプリ
+- Unity Editor 本体と Hub 内モジュール
+- `nvm` で追加導入している Node バージョン
 - アプリのログイン状態、ライセンス、同期データ
+
+## 手動復元メモ
+
+- Unity Hub は宣言されていますが、Unity Editor は手動で入れます。
+- 現在使っている Unity Editor は `6000.3.10f1` (`Unity 6.3 LTS`) です。
+- 現在選択している Unity モジュールは `Mac Build Support (IL2CPP)`, `Web Build Support`, `Windows Build Support (Mono)`, `日本語` です。
 
 ## 今後の拡張
 

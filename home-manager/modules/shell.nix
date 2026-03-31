@@ -4,7 +4,6 @@ let
 in
 {
   home.sessionPath = [
-    "/Applications/platform-tools"
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
     "${homeDir}/Documents"
@@ -49,16 +48,6 @@ in
       bell = "afplay /System/Library/Sounds/Hero.aiff";
     };
     initContent = ''
-      export NVM_DIR="$HOME/.nvm"
-      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-      [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-
-      if [ -s "$NVM_DIR/nvm.sh" ]; then
-        nvm use default --silent
-      fi
-
-      export JAVA_HOME=$(/usr/libexec/java_home -v 21)
-
       if command -v neofetch >/dev/null 2>&1; then
         neofetch
       fi
