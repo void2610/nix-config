@@ -7,6 +7,9 @@
   # ホスト名
   networking.hostName = "Macintosh";
 
+  # プライマリユーザー（nix-darwin のユーザー固有設定に必要）
+  system.primaryUser = "shuya";
+
   # --- macOS システム設定 ---
   system.defaults = {
     # Dock の設定
@@ -35,6 +38,12 @@
       InitialKeyRepeat = 15;
       ApplePressAndHoldEnabled = false; # キーリピートを有効化
     };
+  };
+
+  # ユーザー設定（home-manager が homeDirectory を正しく取得するために必要）
+  users.users.shuya = {
+    name = "shuya";
+    home = "/Users/shuya";
   };
 
   # Touch ID で sudo を許可
