@@ -31,8 +31,10 @@ let
 in
 {
   home.packages = with pkgs; [
+    age
     dotnet-sdk
     neofetch
     nodejs_22
+    sops
   ];
 }

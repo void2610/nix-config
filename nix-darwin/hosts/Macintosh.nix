@@ -4,6 +4,7 @@
     ../modules/homebrew.nix
     ../modules/security.nix
     ../modules/nix-core.nix
+    ../modules/secrets.nix
   ];
 
   networking.hostName = "Macintosh";

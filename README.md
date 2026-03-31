@@ -40,6 +40,7 @@ Nix を使った macOS 設定管理リポジトリです。
 | [nix-darwin](https://github.com/LnL7/nix-darwin) | macOS のシステム設定を宣言的に管理 |
 | [home-manager](https://github.com/nix-community/home-manager) | ユーザー環境（パッケージ・dotfiles）を管理 |
 | [nix-homebrew](https://github.com/zhaofengli/nix-homebrew) | Homebrew パッケージを Nix で宣言的に管理 |
+| [sops-nix](https://github.com/Mic92/sops-nix) | 暗号化した secrets を Nix から配置 |
 
 ## セットアップ（新しいMacへの移行）
 
@@ -77,14 +78,24 @@ cd ~/.nix-config
 sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
 ```
 
-### 5. dotfilesのリンク
+### 5. secretsの準備
+
+```bash
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
+age-keygen -y ~/.config/sops/age/keys.txt
+```
+
+表示された公開鍵を `.sops.yaml` に入れてから、`secrets/common.yaml` を `sops -e -i` で暗号化します。
+
+### 6. dotfilesのリンク
 
 ```bash
 cd ~/dotfiles
 ./install.sh
 ```
 
-### 6. 手動インストールアプリの確認
+### 7. 手動インストールアプリの確認
 
 宣言化できないアプリは `~/dotfiles/MANUAL_APPS.md` を見て個別に復元します。
 
@@ -122,13 +133,13 @@ sudo darwin-rebuild --rollback
 - macOS システム設定
 - `home-manager` で有効化している CLI / shell 環境
 - `dotfiles` に置いている各種設定ファイル
+- `sops-nix` で復元する secrets
 - Node.js 22 系の基準実行環境
 
 ## 手動で戻すもの
 
 - `dotfiles/MANUAL_APPS.md` にあるアプリ
 - Unity Editor 本体と Hub 内モジュール
-- `nvm` で追加導入している Node バージョン
 - アプリのログイン状態、ライセンス、同期データ
 
 ## 手動復元メモ

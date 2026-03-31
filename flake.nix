@@ -22,9 +22,15 @@
       url = "github:zhaofengli/nix-homebrew";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # sops-nix: 暗号化した secrets の配置
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix }:
   let
     hostname = "Macintosh";
     username = "shuya";
@@ -48,6 +54,9 @@
             autoMigrate = true;
           };
         }
+
+        # sops-nix モジュール
+        sops-nix.darwinModules.sops
 
         # home-manager を nix-darwin に統合
         home-manager.darwinModules.home-manager
