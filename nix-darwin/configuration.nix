@@ -41,11 +41,11 @@
       showAppExposeGestureEnabled = false;       # App Exposé ジェスチャー無効
       showDesktopGestureEnabled = false;         # デスクトップ表示ジェスチャー無効
       showLaunchpadGestureEnabled = false;       # Launchpad ジェスチャー無効
-      # ホットコーナー（1 = 無効）
-      wvous-tl-corner = 1;
-      wvous-tr-corner = 1;
-      wvous-bl-corner = 1;
-      wvous-br-corner = 1;
+      # ホットコーナー
+      wvous-tl-corner = 2;   # 左上: Mission Control
+      wvous-tr-corner = 2;   # 右上: Mission Control
+      wvous-bl-corner = 11;  # 左下: Launchpad
+      wvous-br-corner = 4;   # 右下: デスクトップ
     };
 
     # --- Finder ---
