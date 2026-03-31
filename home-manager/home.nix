@@ -57,8 +57,6 @@ in
     DOTNET_ROOT = "${pkgs.dotnet-sdk}/share/dotnet";
   };
 
-  xdg.configFile."starship.toml".source = ./starship.toml;
-
   programs.git = {
     enable = true;
     signing.format = "openpgp";
@@ -168,7 +166,18 @@ in
         '';
       }
     ];
-    extraConfig = builtins.readFile ./tmux.conf;
+    extraConfig = ''
+      bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
+      bind | split-window -h
+      bind - split-window -v
+
+      # Copy selected text to the macOS clipboard.
+      bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
+
+      set -g terminal-overrides 'xterm:colors=256'
+      set -g @continuum-restore 'on'
+      set -g @continuum-boot 'off'
+    '';
   };
 
   # home-manager 自身による管理を有効化
