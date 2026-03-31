@@ -134,6 +134,43 @@ in
     '';
   };
 
+  programs.tmux = {
+    enable = true;
+    mouse = true;
+    prefix = "C-b";
+    baseIndex = 1;
+    shell = "/bin/zsh";
+    terminal = "screen-256color";
+    plugins = with pkgs.tmuxPlugins; [
+      pain-control
+      resurrect
+      continuum
+      sensible
+      urlview
+      copycat
+      yank
+      tmux-fzf
+      extrakto
+      {
+        plugin = dracula;
+        extraConfig = ''
+          set -g @dracula-plugins "battery cpu-usage ram-usage time"
+          set -g @dracula-show-powerline true
+          set -g @dracula-show-left-sep ""
+          set -g @dracula-show-right-sep ""
+          set -g @dracula-show-left-icon session
+          set -g @dracula-left-icon-padding 2
+          set -g @dracula-show-location false
+          set -g @dracula-show-fahrenheit false
+          set -g @dracula-show-timezone false
+          set -g @dracula-show-flags true
+          set -g @dracula-military-time true
+        '';
+      }
+    ];
+    extraConfig = builtins.readFile ./tmux.conf;
+  };
+
   # home-manager 自身による管理を有効化
   programs.home-manager.enable = true;
 }
