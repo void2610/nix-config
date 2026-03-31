@@ -99,7 +99,7 @@
 
     # --- スクリーンショット ---
     screencapture = {
-      location = "~/Desktop";    # 保存先: デスクトップ
+      location = "~/Downloads";  # 保存先: ダウンロード
       target = "file";           # ファイルとして保存
       disable-shadow = false;    # ドロップシャドウを残す
       include-date = true;       # ファイル名に日時を含める
