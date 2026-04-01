@@ -39,6 +39,7 @@ in
     gh
     neofetch
     neovim
+    docker-compose
     nodejs_22
     sops
     yarn

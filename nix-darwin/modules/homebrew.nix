@@ -2,6 +2,7 @@
 let
   commonBrews = [
     "docker"
+    "docker-compose"
     "eza"
     "ffmpeg"
     "fzf"
