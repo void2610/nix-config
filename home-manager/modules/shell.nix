@@ -4,10 +4,10 @@ let
 in
 {
   home.sessionPath = [
+    "${homeDir}/.local/bin"
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"
     "${homeDir}/Documents"
-    "${homeDir}/.local/bin"
     "${homeDir}/.yarn/bin"
   ];
 
