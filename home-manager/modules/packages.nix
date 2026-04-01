@@ -32,8 +32,13 @@ in
 {
   home.packages = with pkgs; [
     age
+    clang-tools
+    cmake
     dotnet-sdk
+    fd
+    gh
     neofetch
+    neovim
     nodejs_22
     sops
   ];
