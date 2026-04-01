@@ -55,7 +55,13 @@ let
     "unity-hub"
   ];
 
-  workCasks = [ ];
+  workCasks = [
+    "blender"
+    "cloudcompare"
+    "freecad"
+    "google-chrome"
+    "zoom"
+  ];
 
   serverCasks = [
     "unity-hub"
