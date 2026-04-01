@@ -1,8 +1,6 @@
 { profile, ... }:
 let
   commonBrews = [
-    "docker"
-    "docker-compose"
     "eza"
     "ffmpeg"
     "fzf"
@@ -45,7 +43,6 @@ let
   workBrews = [
     "assimp"
     "bullet"
-    "colima"
     "glew"
     "glfw"
     "glm"
@@ -53,7 +50,6 @@ let
     "opencv"
     "pcl"
     "pkg-config"
-    "qemu"
     "zstd"
   ];
   serverBrews = [ ];
@@ -62,7 +58,6 @@ let
     "affinity"
     "discord"
     "obs"
-    "orbstack"
     "rider"
     "sf-symbols"
     "steam"
@@ -79,7 +74,6 @@ let
   ];
 
   serverCasks = [
-    "orbstack"
     "unity-hub"
   ];
 

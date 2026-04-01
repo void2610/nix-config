@@ -1,5 +1,7 @@
 { pkgs, profile, ... }:
 let
+  claudeCodeUi = import ../../pkgs/claude-code-ui.nix { inherit pkgs; };
+
   neofetch = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "neofetch";
     version = "7.1.0";
@@ -34,13 +36,17 @@ in
     age
     clang-tools
     cmake
+    colima
     dotnet-sdk
+    claudeCodeUi
+    docker-client
+    docker-compose
     fd
     gh
     neofetch
     neovim
-    docker-compose
     nodejs_22
+    qemu
     sops
     yarn
   ];
