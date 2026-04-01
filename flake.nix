@@ -93,7 +93,7 @@
         profile = "game";
       };
 
-      "work-dev" = mkDarwinConfiguration {
+      "PCmac24055" = mkDarwinConfiguration {
         configName = "work-dev";
         profile = "work";
       };

@@ -1,6 +1,7 @@
 { profile, ... }:
 let
   commonBrews = [
+    "docker"
     "eza"
     "ffmpeg"
     "fzf"
@@ -30,7 +31,6 @@ let
     "karabiner-elements"
     "keycastr"
     "linearmouse"
-    "orbstack"
     "raycast"
     "spotify"
     "tailscale-app"
@@ -48,6 +48,7 @@ let
     "affinity"
     "discord"
     "obs"
+    "orbstack"
     "rider"
     "sf-symbols"
     "steam"
@@ -64,6 +65,7 @@ let
   ];
 
   serverCasks = [
+    "orbstack"
     "unity-hub"
   ];
 

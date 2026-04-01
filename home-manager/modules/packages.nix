@@ -41,5 +41,6 @@ in
     neovim
     nodejs_22
     sops
+    yarn
   ];
 }
