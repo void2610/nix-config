@@ -42,7 +42,20 @@ let
   ];
 
   gameBrews = [ ];
-  workBrews = [ "colima" "qemu" ];
+  workBrews = [
+    "assimp"
+    "bullet"
+    "colima"
+    "glew"
+    "glfw"
+    "glm"
+    "jsoncpp"
+    "opencv"
+    "pcl"
+    "pkg-config"
+    "qemu"
+    "zstd"
+  ];
   serverBrews = [ ];
 
   gameCasks = [
