@@ -1,3 +1,4 @@
+{ homeDirectory, username, ... }:
 {
   imports = [
     ../modules/packages.nix
@@ -6,8 +7,8 @@
     ../modules/tmux.nix
   ];
 
-  home.username = "shuya";
-  home.homeDirectory = "/Users/shuya";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
   home.stateVersion = "24.11";
 
   programs.home-manager.enable = true;

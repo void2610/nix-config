@@ -4,12 +4,12 @@
     ../modules/homebrew.nix
   ];
 
-  networking.hostName = "work-dev";
+  networking.hostName = "PCmac24055";
 
-  system.primaryUser = "shuya";
+  system.primaryUser = "shuya.izumi";
 
-  users.users.shuya = {
-    name = "shuya";
-    home = "/Users/shuya";
+  users.users."shuya.izumi" = {
+    name = "shuya.izumi";
+    home = "/Users/shuya.izumi";
   };
 }

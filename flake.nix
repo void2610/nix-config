@@ -31,7 +31,6 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix }:
   let
-    username = "shuya";
     system = "aarch64-darwin";
     mkDarwinConfiguration =
       {
@@ -40,41 +39,45 @@
       }:
       nix-darwin.lib.darwinSystem {
         inherit system;
-        specialArgs = {
-          inherit profile username;
-        };
+        specialArgs = { inherit profile; };
         modules = [
           ./nix-darwin/hosts/${configName}.nix
 
           nix-homebrew.darwinModules.nix-homebrew
-          {
+          ({ config, ... }: {
             nix-homebrew = {
               enable = true;
               enableRosetta = false;
-              user = username;
+              user = config.system.primaryUser;
               autoMigrate = true;
             };
-          }
+          })
 
           sops-nix.darwinModules.sops
 
           home-manager.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "backup";
-              extraSpecialArgs = {
-                inherit profile;
+          ({ config, ... }:
+            let
+              username = config.system.primaryUser;
+              homeDirectory = config.users.users.${username}.home;
+            in
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "backup";
+                extraSpecialArgs = {
+                  inherit profile;
+                  inherit homeDirectory username;
+                };
+                users.${username} = {
+                  imports = [
+                    ./home-manager/users/default.nix
+                    (./home-manager/profiles + "/${profile}.nix")
+                  ];
+                };
               };
-              users.${username} = {
-                imports = [
-                  ./home-manager/users/${username}.nix
-                  (./home-manager/profiles + "/${profile}.nix")
-                ];
-              };
-            };
-          }
+            })
         ];
       };
   in

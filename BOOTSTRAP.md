@@ -30,7 +30,7 @@ git clone https://github.com/void2610/dotfiles.git ~/dotfiles
 
 ```bash
 cd ~/.nix-config
-sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#work-dev
 ```
 
 これで `sops-nix` により SSH secrets が `~/.ssh` に復元される。
@@ -47,7 +47,7 @@ cd ~/dotfiles
 
 ```bash
 cd ~/.nix-config
-sudo darwin-rebuild switch --flake .#Macintosh
+sudo darwin-rebuild switch --flake .#work-dev
 ```
 
 ## 7. 動作確認

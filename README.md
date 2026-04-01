@@ -51,7 +51,7 @@ Nix を使った macOS 設定管理リポジトリです。
 | `.#work-dev` | `work` | 会社用開発機 |
 | `.#server-node` | `server` | 常時稼働のサブ機。LLM agent と自動化実行用 |
 
-`hosts/` はホスト名やホームディレクトリのような固有値だけを持ちます。インストールアプリや shell の差分は `profile` で切り替えます。
+`hosts/` はホスト名、primary user、ホームディレクトリのような固有値だけを持ちます。インストールアプリや shell の差分は `profile` で切り替えます。
 
 ## profile ごとの差分
 
@@ -101,7 +101,7 @@ scutil --get LocalHostName
 
 ```bash
 cd ~/.nix-config
-sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#Macintosh
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#work-dev
 ```
 
 ### 5. secretsの準備
@@ -131,7 +131,7 @@ cd ~/dotfiles
 
 ```bash
 cd ~/.nix-config
-sudo darwin-rebuild switch --flake .#Macintosh
+sudo darwin-rebuild switch --flake .#work-dev
 ```
 
 別ホストでは target 名を切り替えます。例:
@@ -145,7 +145,7 @@ sudo darwin-rebuild switch --flake .#work-dev
 ```bash
 cd ~/.nix-config
 nix flake update
-sudo darwin-rebuild switch --flake .#Macintosh
+sudo darwin-rebuild switch --flake .#work-dev
 ```
 
 ### ロールバック
