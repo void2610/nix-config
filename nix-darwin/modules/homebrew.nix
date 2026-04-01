@@ -42,7 +42,7 @@ let
   ];
 
   gameBrews = [ ];
-  workBrews = [ ];
+  workBrews = [ "colima" "qemu" ];
   serverBrews = [ ];
 
   gameCasks = [

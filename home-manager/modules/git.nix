@@ -20,6 +20,9 @@
         process = "git-lfs filter-process";
         required = true;
       };
+      # git@github.com: を SSH config の github エイリアス経由にリダイレクト
+      # （id_github_rsa を使うため）
+      "url \"git@github:\"".insteadOf = "git@github.com:";
     };
   };
 }

@@ -46,6 +46,8 @@ in
       ll = "eza -la --icons --group-directories-first";
       tree = "eza --tree --icons";
       bell = "afplay /System/Library/Sounds/Hero.aiff";
+      # macOS 25.4以降でSSHエージェントがlimactl接続をブロックする問題の回避
+      colima = "SSH_AUTH_SOCK= colima";
     };
     initContent = ''
       if command -v neofetch >/dev/null 2>&1; then
