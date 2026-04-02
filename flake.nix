@@ -41,7 +41,7 @@
         inherit system;
         specialArgs = { inherit profile; };
         modules = [
-          ./nix-darwin/hosts/${configName}.nix
+          (import ./nix-darwin/hosts/default.nix { inherit configName; })
 
           nix-homebrew.darwinModules.nix-homebrew
           ({ config, ... }: {
