@@ -2,6 +2,7 @@
 let
   commonBrews = [
     "eza"
+    "ninja"
     "ffmpeg"
     "fzf"
     "go"
@@ -50,6 +51,7 @@ let
     "opencv"
     "pcl"
     "pkg-config"
+    "python@3.12"
     "zstd"
   ];
   serverBrews = [ ];
