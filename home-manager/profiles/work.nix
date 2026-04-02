@@ -1,6 +1,2 @@
 { ... }:
-{
-  imports = [
-    ../modules/melchior
-  ];
-}
+{ }

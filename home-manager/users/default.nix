@@ -3,6 +3,7 @@
   imports = [
     ../modules/packages.nix
     ../modules/git.nix
+    ../modules/melchior
     ../modules/shell.nix
     ../modules/tmux.nix
   ];
