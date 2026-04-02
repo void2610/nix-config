@@ -77,4 +77,4 @@ Homebrew パッケージをプロファイル別に宣言的管理する。
 
 ### melchior/ （work-dev のみ）
 
-→ [melchior/README.md](melchior/README.md) を参照
+→ [modules/melchior/README.md](modules/melchior/README.md) を参照

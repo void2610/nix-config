@@ -78,7 +78,7 @@ Tmux の設定。Dracula テーマ + 各種プラグイン。
 
 ### melchior/ （work profile のみ）
 
-→ [melchior/README.md](melchior/README.md) を参照
+→ [modules/melchior/README.md](modules/melchior/README.md) を参照
 
 ---
 
