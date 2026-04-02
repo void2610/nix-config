@@ -2,6 +2,7 @@
   imports = [
     ../modules/base.nix
     ../modules/homebrew.nix
+    ../modules/melchior
   ];
 
   networking.hostName = "PCmac24055";

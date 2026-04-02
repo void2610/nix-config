@@ -41,18 +41,7 @@ let
   ];
 
   gameBrews = [ ];
-  workBrews = [
-    "assimp"
-    "bullet"
-    "glew"
-    "glfw"
-    "glm"
-    "jsoncpp"
-    "opencv"
-    "pcl"
-    "pkg-config"
-    "zstd"
-  ];
+  workBrews = [ ];
   serverBrews = [ ];
 
   gameCasks = [
