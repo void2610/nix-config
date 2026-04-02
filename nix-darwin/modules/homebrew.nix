@@ -51,7 +51,6 @@ let
     "opencv"
     "pcl"
     "pkg-config"
-    "python@3.12"
     "zstd"
   ];
   serverBrews = [ ];

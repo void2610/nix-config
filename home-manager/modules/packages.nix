@@ -30,6 +30,14 @@ let
       platforms = platforms.unix;
     };
   };
+  # Melchior開発用Pythonパッケージ環境
+  melchiorPython = pkgs.python312.withPackages (ps: with ps; [
+    numpy
+    scipy
+    ezdxf
+    shapely
+    numba
+  ]);
 in
 {
   home.packages = with pkgs; [
@@ -49,5 +57,10 @@ in
     qemu
     sops
     yarn
+    melchiorPython
   ];
+
+  # 埋め込みPythonがnixパッケージを認識できるよう設定
+  home.sessionVariables.PYTHONPATH =
+    "${melchiorPython}/lib/python3.12/site-packages";
 }
