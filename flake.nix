@@ -123,14 +123,27 @@
       pkgs.mkShell {
         packages = [
           pkgs.assimp
+          pkgs.bullet
+          pkgs.cgns
           pkgs.cmake
+          pkgs.eigen
+          pkgs.freetype
           pkgs.git
           pkgs.glew
           pkgs.glfw
           pkgs.glm
           pkgs.jsoncpp
+          pkgs.libharu
+          pkgs.libjpeg
+          pkgs.lz4
+          pkgs.libpng
+          pkgs.libusb1
           pkgs.ninja
+          pkgs.opencv
+          pkgs.pcl
           pkgs.pkg-config
+          pkgs.proj
+          pkgs.xz
           pkgs.zstd
           melchiorCliPython
         ];
@@ -150,6 +163,7 @@
           export MELCHIOR_EMBEDDED_SITE_PACKAGES="${melchiorEmbeddedSitePackages}"
           export MELCHIOR_SAM_SITE_PACKAGES_SRC="${melchiorSamSitePackages}"
           export MELCHIOR_CMAKE_BIN="${pkgs.cmake}/bin/cmake"
+          export MELCHIOR_EXTRA_LINK_FLAGS="-L${pkgs.glfw}/lib -L${pkgs.glew.out}/lib -L${pkgs.lz4.lib}/lib -L${pkgs.proj.out}/lib -L${pkgs.xz.out}/lib -L${pkgs.zstd.out}/lib"
 
           # macOS の純正 compiler / linker を使う。
           # これをしないと Nix 側の wrapper と Homebrew 側ライブラリの SDK が混ざり、
@@ -162,17 +176,56 @@
           export LD="$MELCHIOR_NATIVE_LD"
           export SDKROOT="${nativeSdkRoot}"
           export MACOSX_DEPLOYMENT_TARGET="${nativeDeploymentTarget}"
+          export MELCHIOR_PCL_DIR="$(dirname "$(find ${pkgs.pcl} -name PCLConfig.cmake | head -n 1)")"
+          export MELCHIOR_BULLET_DIR="$(dirname "$(find ${pkgs.bullet} -name BulletConfig.cmake | head -n 1)")"
+          export PCL_ROOT="${pkgs.pcl}"
+          export Bullet_ROOT="${pkgs.bullet}"
+          export OpenCV_ROOT="${pkgs.opencv}"
 
           # 一部ライブラリは include path の伝播が弱く、そのままだと
           # `glm/glm.hpp` や `GLFW/glfw3.h` を見つけられない箇所がある。
           # そのため開発 shell 側で補助的に include path を足す。
-          export CPATH="${pkgs.glfw}/include:${pkgs.glew.dev}/include:${pkgs.glm}/include''${CPATH:+:$CPATH}"
+          export CPATH="${pkgs.cgns}/include:${pkgs.eigen}/include/eigen3:${pkgs.freetype.dev}/include/freetype2:${pkgs.glfw}/include:${pkgs.glew.dev}/include:${pkgs.glm}/include:${pkgs.libharu}/include:${pkgs.libjpeg.dev}/include:${pkgs.lz4.dev}/include:${pkgs.libpng}/include:${pkgs.libusb1.dev}/include/libusb-1.0:${pkgs.pcl}/include:${pkgs.opencv}/include/opencv4:${pkgs.proj.dev}/include:${pkgs.xz.dev}/include''${CPATH:+:$CPATH}"
+          export LIBRARY_PATH="${pkgs.cgns}/lib:${pkgs.freetype.out}/lib:${pkgs.glfw}/lib:${pkgs.glew.out}/lib:${pkgs.libharu}/lib:${pkgs.libjpeg.out}/lib:${pkgs.lz4.lib}/lib:${pkgs.libpng}/lib:${pkgs.libusb1}/lib:${pkgs.pcl}/lib:${pkgs.bullet}/lib:${pkgs.opencv}/lib:${pkgs.proj.out}/lib:${pkgs.xz.out}/lib:${pkgs.zstd.out}/lib''${LIBRARY_PATH:+:$LIBRARY_PATH}"
+          export CMAKE_INCLUDE_PATH="${pkgs.cgns}/include:${pkgs.eigen}/include/eigen3:${pkgs.freetype.dev}/include/freetype2:${pkgs.libharu}/include:${pkgs.libjpeg.dev}/include:${pkgs.lz4.dev}/include:${pkgs.libpng}/include:${pkgs.libusb1.dev}/include/libusb-1.0:${pkgs.pcl}/include:${pkgs.opencv}/include/opencv4:${pkgs.proj.dev}/include:${pkgs.xz.dev}/include''${CMAKE_INCLUDE_PATH:+:$CMAKE_INCLUDE_PATH}"
+          export CMAKE_LIBRARY_PATH="${pkgs.cgns}/lib:${pkgs.freetype.out}/lib:${pkgs.glfw}/lib:${pkgs.glew.out}/lib:${pkgs.libharu}/lib:${pkgs.libjpeg.out}/lib:${pkgs.lz4.lib}/lib:${pkgs.libpng}/lib:${pkgs.libusb1}/lib:${pkgs.pcl}/lib:${pkgs.bullet}/lib:${pkgs.opencv}/lib:${pkgs.proj.out}/lib:${pkgs.xz.out}/lib:${pkgs.zstd.out}/lib''${CMAKE_LIBRARY_PATH:+:$CMAKE_LIBRARY_PATH}"
 
-          # repo 側へ寄せた依存を CMake / pkg-config が優先して見つけるようにする。
-          export CMAKE_PREFIX_PATH="${pkgs.assimp}:${pkgs.glfw}:${pkgs.glew}:${pkgs.glm}:${pkgs.jsoncpp}:${pkgs.zstd}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
-          export PKG_CONFIG_PATH="${pkgs.glfw}/lib/pkgconfig:${pkgs.glew}/lib/pkgconfig:${pkgs.jsoncpp.dev}/lib/pkgconfig:${pkgs.zstd.dev}/lib/pkgconfig''${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+          # 一部のリンクは CMake が完全な絶対パスではなく `-lGLEW` / `-lzstd` の形を残す。
+          # そのため linker 自体が探索する `-L...` も明示で足しておく。
+          export LDFLAGS="-L${pkgs.glfw}/lib -L${pkgs.glew}/lib -L${pkgs.lz4.out}/lib -L${pkgs.proj.out}/lib -L${pkgs.xz.out}/lib -L${pkgs.zstd.out}/lib ''${LDFLAGS:+$LDFLAGS}"
+
+          # repo 側へ寄せた依存と、ビルドに必要な重い C++ ライブラリも Nix 側から見つける。
+          export CMAKE_PREFIX_PATH="${pkgs.assimp}:${pkgs.bullet}:${pkgs.cgns}:${pkgs.eigen}:${pkgs.freetype.dev}:${pkgs.glfw}:${pkgs.glew}:${pkgs.glm}:${pkgs.jsoncpp}:${pkgs.libharu}:${pkgs.libjpeg.dev}:${pkgs.lz4.dev}:${pkgs.libpng}:${pkgs.libusb1}:${pkgs.opencv}:${pkgs.pcl}:${pkgs.proj}:${pkgs.xz.dev}:${pkgs.zstd.dev}''${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
+          export PKG_CONFIG_PATH="${pkgs.cgns}/lib/pkgconfig:${pkgs.freetype.dev}/lib/pkgconfig:${pkgs.glfw}/lib/pkgconfig:${pkgs.glew.out}/lib/pkgconfig:${pkgs.jsoncpp.dev}/lib/pkgconfig:${pkgs.libharu}/lib/pkgconfig:${pkgs.libjpeg.dev}/lib/pkgconfig:${pkgs.lz4.lib}/lib/pkgconfig:${pkgs.libpng}/lib/pkgconfig:${pkgs.libusb1.dev}/lib/pkgconfig:${pkgs.opencv}/lib/pkgconfig:${pkgs.pcl}/lib/pkgconfig:${pkgs.proj.dev}/lib/pkgconfig:${pkgs.xz.dev}/lib/pkgconfig:${pkgs.zstd.dev}/lib/pkgconfig''${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
 
           mkdir -p "$MELCHIOR_REPO/.nix-melchior/bin"
+          mkdir -p "$MELCHIOR_REPO/.nix-melchior/cmake"
+
+          # nixpkgs の GLEW CMake config は macOS で `IMPORTED_IMPLIB_RELEASE "GLEW"` を入れる。
+          # これが余計な `-lGLEW` を発生させ、実際の dylib は絶対パスで渡っているのに
+          # 追加の bare link が失敗する。repo ローカルに config を複製し、その行だけ外す。
+          if [[ -d "$MELCHIOR_REPO/.nix-melchior/cmake/glew" ]]; then
+            chmod -R u+w "$MELCHIOR_REPO/.nix-melchior/cmake/glew" || true
+            rm -rf "$MELCHIOR_REPO/.nix-melchior/cmake/glew"
+          fi
+          mkdir -p "$MELCHIOR_REPO/.nix-melchior/cmake/glew"
+          cp ${pkgs.glew.dev}/lib/cmake/glew/* "$MELCHIOR_REPO/.nix-melchior/cmake/glew/"
+          chmod -R u+w "$MELCHIOR_REPO/.nix-melchior/cmake/glew"
+          python3 - <<'EOF'
+          from pathlib import Path
+          import re
+
+          path = Path("/Users/shuya.izumi/Documents/GitHub/melchior/.nix-melchior/cmake/glew/glew-config.cmake")
+          text = path.read_text()
+          text = re.sub(
+              r"\nset_target_properties\(GLEW::GLEW\$\{_glew_target_postfix\} PROPERTIES.*?\n\)\n",
+              "\n",
+              text,
+              flags=re.S,
+          )
+          path.write_text(text)
+          EOF
+          export MELCHIOR_GLEW_DIR="$MELCHIOR_REPO/.nix-melchior/cmake/glew"
 
           # `cmake` wrapper:
           # 普通に `cmake ..` と打っても、Python 3.12 / 純正 clang / 純正 ld /
@@ -186,6 +239,10 @@
           have_c_compiler=0
           have_cxx_compiler=0
           have_linker=0
+          have_glew_dir=0
+          have_shared_linker_flags=0
+          have_module_linker_flags=0
+          have_exe_linker_flags=0
           extra_args=()
           for arg in "$@"; do
             if [[ "$arg" == -DPython_EXECUTABLE=* ]]; then
@@ -203,6 +260,18 @@
             if [[ "$arg" == -DCMAKE_LINKER=* ]]; then
               have_linker=1
             fi
+            if [[ "$arg" == -DGLEW_DIR=* ]]; then
+              have_glew_dir=1
+            fi
+            if [[ "$arg" == -DCMAKE_SHARED_LINKER_FLAGS=* ]]; then
+              have_shared_linker_flags=1
+            fi
+            if [[ "$arg" == -DCMAKE_MODULE_LINKER_FLAGS=* ]]; then
+              have_module_linker_flags=1
+            fi
+            if [[ "$arg" == -DCMAKE_EXE_LINKER_FLAGS=* ]]; then
+              have_exe_linker_flags=1
+            fi
           done
 
           if [[ "$have_python_exec" -eq 0 ]]; then
@@ -219,6 +288,18 @@
           fi
           if [[ "$have_linker" -eq 0 ]]; then
             extra_args+=("-DCMAKE_LINKER=$MELCHIOR_NATIVE_LD")
+          fi
+          if [[ "$have_glew_dir" -eq 0 ]]; then
+            extra_args+=("-DGLEW_DIR=$MELCHIOR_GLEW_DIR")
+          fi
+          if [[ "$have_shared_linker_flags" -eq 0 ]]; then
+            extra_args+=("-DCMAKE_SHARED_LINKER_FLAGS=$MELCHIOR_EXTRA_LINK_FLAGS")
+          fi
+          if [[ "$have_module_linker_flags" -eq 0 ]]; then
+            extra_args+=("-DCMAKE_MODULE_LINKER_FLAGS=$MELCHIOR_EXTRA_LINK_FLAGS")
+          fi
+          if [[ "$have_exe_linker_flags" -eq 0 ]]; then
+            extra_args+=("-DCMAKE_EXE_LINKER_FLAGS=$MELCHIOR_EXTRA_LINK_FLAGS")
           fi
           if [[ -n "''${SDKROOT:-}" ]]; then
             extra_args+=("-DCMAKE_OSX_SYSROOT=$SDKROOT")
@@ -322,6 +403,13 @@
 
           # 以後の `cmake` / `ninja` は wrapper が優先される。
           export PATH="$MELCHIOR_REPO/.nix-melchior/bin:$PATH"
+
+          # 開発 shell の中では `b` だけで Melchior の主要ターゲットをビルドできるようにする。
+          # これは単なる短縮関数で、configure の介入はしない。
+          b() {
+            cd "$MELCHIOR_REPO/build" || return 1
+            ninja melchior_main toadflax -j8 && ./melchior_main
+          }
 
           # shell に入った直後に、何が選ばれたかを見えるようにしておく。
           echo "Melchior Nix shell ready"
