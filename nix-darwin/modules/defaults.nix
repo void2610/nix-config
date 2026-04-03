@@ -1,5 +1,15 @@
 {
   system.defaults = {
+    ActivityMonitor = {
+      OpenMainWindow = false;
+      ShowCategory = 100;
+    };
+
+    ".GlobalPreferences" = {
+      "com.apple.mouse.scaling" = 1.5;
+      "com.apple.sound.beep.sound" = "/System/Library/Sounds/Pop.aiff";
+    };
+
     dock = {
       autohide = true;
       autohide-delay = 0.0;
@@ -27,11 +37,20 @@
     finder = {
       AppleShowAllFiles = true;
       AppleShowAllExtensions = true;
+      CreateDesktop = true;
+      FXDefaultSearchScope = "SCcf";
       ShowPathbar = true;
       ShowStatusBar = true;
       FXPreferredViewStyle = "Nlsv";
       FXEnableExtensionChangeWarning = false;
+      FXRemoveOldTrashItems = true;
+      NewWindowTarget = "Other";
+      NewWindowTargetPath = "file:///";
       QuitMenuItem = true;
+      ShowExternalHardDrivesOnDesktop = false;
+      ShowHardDrivesOnDesktop = false;
+      ShowMountedServersOnDesktop = false;
+      ShowRemovableMediaOnDesktop = true;
       _FXSortFoldersFirst = true;
       _FXSortFoldersFirstOnDesktop = true;
       _FXShowPosixPathInTitle = false;
@@ -47,6 +66,11 @@
       InitialKeyRepeat = 15;
       KeyRepeat = 2;
       AppleKeyboardUIMode = 3;
+      NSTableViewDefaultSizeMode = 2;
+      "com.apple.sound.beep.feedback" = 0;
+      "com.apple.sound.beep.volume" = 0.4651094;
+      "com.apple.springing.delay" = 0.03122824430465698;
+      "com.apple.springing.enabled" = true;
       "com.apple.trackpad.forceClick" = true;
       "com.apple.trackpad.scaling" = 3.0;
       "com.apple.swipescrolldirection" = true;
@@ -58,6 +82,10 @@
       AppleMeasurementUnits = "Centimeters";
       AppleMetricUnits = 1;
       AppleTemperatureUnit = "Celsius";
+    };
+
+    controlcenter = {
+      BatteryShowPercentage = true;
     };
 
     screencapture = {
@@ -85,6 +113,52 @@
     screensaver = {
       askForPassword = true;
       askForPasswordDelay = 0;
+    };
+
+    trackpad = {
+      ActuateDetents = true;
+      Clicking = true;
+      Dragging = true;
+      DragLock = false;
+      FirstClickThreshold = 0;
+      ForceSuppressed = false;
+      SecondClickThreshold = 0;
+      TrackpadCornerSecondaryClick = 0;
+      TrackpadFourFingerHorizSwipeGesture = 2;
+      TrackpadFourFingerPinchGesture = 0;
+      TrackpadFourFingerVertSwipeGesture = 2;
+      TrackpadMomentumScroll = true;
+      TrackpadPinch = true;
+      TrackpadRightClick = true;
+      TrackpadRotate = true;
+      TrackpadThreeFingerDrag = false;
+      TrackpadThreeFingerHorizSwipeGesture = 2;
+      TrackpadThreeFingerTapGesture = 0;
+      TrackpadThreeFingerVertSwipeGesture = 2;
+      TrackpadTwoFingerDoubleTapGesture = false;
+      TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
+    };
+
+    universalaccess = {
+      closeViewScrollWheelToggle = false;
+      mouseDriverCursorSize = 1.0;
+      reduceMotion = false;
+      reduceTransparency = false;
+    };
+
+    WindowManager = {
+      AppWindowGroupingBehavior = true;
+      AutoHide = false;
+      GloballyEnabled = false;
+      HideDesktop = true;
+      StageManagerHideWidgets = false;
+      StandardHideWidgets = false;
+    };
+
+    CustomUserPreferences = {
+      "com.apple.screencapture" = {
+        showsClicks = true;
+      };
     };
   };
 }
