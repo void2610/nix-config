@@ -56,9 +56,17 @@ in
 
       eval "$(uv generate-shell-completion zsh)"
 
-      melchior-dev() {
+      mel-d() {
         cd /Users/shuya.izumi/Documents/GitHub/melchior || return 1
         nix develop /Users/shuya.izumi/nix-config#melchior
+      }
+
+      mel-b() {
+        cd /Users/shuya.izumi/Documents/GitHub/melchior || return 1
+        nix develop /Users/shuya.izumi/nix-config#melchior -c bash -lc '
+          cd build || exit 1
+          ninja melchior_main toadflax -j8
+        '
       }
     '';
   };
