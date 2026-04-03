@@ -2,15 +2,8 @@
 { ... }:
 {
   homebrew.brews = [
-    "assimp"
     "bullet"
-    "glew"
-    "glfw"
-    "glm"
-    "jsoncpp"
     "opencv"
     "pcl"
-    "pkg-config"
-    "zstd"
   ];
 }

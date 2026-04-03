@@ -55,6 +55,11 @@ in
       fi
 
       eval "$(uv generate-shell-completion zsh)"
+
+      melchior-dev() {
+        cd /Users/shuya.izumi/Documents/GitHub/melchior || return 1
+        nix develop /Users/shuya.izumi/nix-config#melchior
+      }
     '';
   };
 }

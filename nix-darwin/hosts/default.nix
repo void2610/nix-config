@@ -4,7 +4,7 @@ let
   hosts = {
     Macintosh   = { hostName = "Macintosh";   username = "shuya";       extraModules = []; };
     game-dev    = { hostName = "game-dev";    username = "shuya";       extraModules = []; };
-    work-dev    = { hostName = "PCmac24055";  username = "shuya.izumi"; extraModules = [ ../modules/melchior ]; };
+    work-dev    = { hostName = "PCmac24055";  username = "shuya.izumi"; extraModules = []; };
     server-node = { hostName = "server-node"; username = "shuya";       extraModules = []; };
   };
   cfg = hosts.${configName};
