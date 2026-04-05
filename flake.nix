@@ -37,7 +37,7 @@
       path = ./pkgs/melchior;
       name = "melchior-nix";
     };
-    pkgs = import nixpkgs { inherit system; };
+    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     # Melchior は共有 repo なので、repo には個人用 flake を置かず、
     # 自分の nix-config 側だけで開発環境を管理する。
     melchiorDevShell = import "${melchiorNixDir}/dev-shell.nix" {

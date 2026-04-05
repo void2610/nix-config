@@ -35,6 +35,7 @@ in
 {
   home.packages = with pkgs; [
     age
+    alcove
     clang-tools
     cmake
     colima
