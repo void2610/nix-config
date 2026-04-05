@@ -45,7 +45,6 @@ let
   serverBrews = [ ];
 
   gameCasks = [
-    "affinity"
     "discord"
     "obs"
     "rider"

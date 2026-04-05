@@ -2,7 +2,7 @@
 { configName }:
 let
   hosts = {
-    Macintosh   = { hostName = "Macintosh";   username = "shuya";       extraModules = []; };
+    Macintosh   = { hostName = "Macintosh";   username = "shuya";       extraModules = [ ../modules/dock-game-dev.nix ]; };
     game-dev    = { hostName = "game-dev";    username = "shuya";       extraModules = [ ../modules/dock-game-dev.nix ]; };
     work-dev    = { hostName = "PCmac24055";  username = "shuya.izumi"; extraModules = []; };
     server-node = { hostName = "server-node"; username = "shuya";       extraModules = []; };
