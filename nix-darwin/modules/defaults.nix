@@ -139,12 +139,6 @@
       TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
     };
 
-    universalaccess = {
-      closeViewScrollWheelToggle = false;
-      mouseDriverCursorSize = 1.0;
-      reduceMotion = false;
-      reduceTransparency = false;
-    };
 
     WindowManager = {
       AppWindowGroupingBehavior = true;

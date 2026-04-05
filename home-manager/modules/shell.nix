@@ -29,7 +29,7 @@ in
 
   programs.zoxide = {
     enable = true;
-    enableZshIntegration = true;
+    enableZshIntegration = false;
     options = [ "--cmd" "cd" ];
   };
 
@@ -61,6 +61,8 @@ in
         nix develop /Users/shuya.izumi/nix-config#melchior
       }
 
+      # zoxideは他のツールより後に初期化する必要があるため末尾に配置
+      eval "$(zoxide init zsh --cmd cd)"
     '';
   };
 }
