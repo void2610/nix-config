@@ -1,6 +1,7 @@
 { pkgs, profile, ... }:
 let
   claudeCodeUi = import ../../pkgs/claude-code-ui.nix { inherit pkgs; };
+  uloopCli = import ../../pkgs/uloop-cli.nix { inherit pkgs; };
 
   neofetch = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "neofetch";
@@ -47,6 +48,7 @@ in
     neovim
     nodejs_22
     qemu
+    uloopCli
     sops
     yarn
   ];
