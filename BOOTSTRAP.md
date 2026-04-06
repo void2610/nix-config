@@ -30,11 +30,11 @@ git clone https://github.com/void2610/dotfiles.git ~/dotfiles
 
 ```bash
 cd ~/.nix-config
-sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#work-dev
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#work
 ```
 
 これで `sops-nix` により SSH secrets が `~/.ssh` に復元される。
-別ホストを使う場合は `.#game-dev` / `.#work-dev` / `.#server-node` に切り替える。
+別ホストを使う場合は `.#game` / `.#work` / `.#server` に切り替える。
 
 ## 5. dotfiles をリンクする
 
@@ -47,7 +47,7 @@ cd ~/dotfiles
 
 ```bash
 cd ~/.nix-config
-sudo darwin-rebuild switch --flake .#work-dev
+sudo darwin-rebuild switch --flake .#work
 ```
 
 ## 7. 動作確認

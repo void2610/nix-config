@@ -16,10 +16,9 @@ Nix + nix-darwin + home-manager による macOS 設定管理リポジトリ。
 
 | flake target | profile | 用途 |
 |---|---|---|
-| `.#Macintosh` | game | メイン機（趣味・ゲーム） |
-| `.#game-dev` | game | ゲーム開発機 |
-| `.#PCmac24055` | work | 会社開発機 |
-| `.#server-node` | server | サーバーノード |
+| `.#game` | game | メイン機（趣味・ゲーム） |
+| `.#work` | work | 会社開発機 |
+| `.#server` | server | サーバーノード |
 
 ## 設計方針
 
@@ -32,7 +31,7 @@ Nix + nix-darwin + home-manager による macOS 設定管理リポジトリ。
 ## 日常操作
 
 ```bash
-darwin-rebuild switch --flake .#PCmac24055   # 設定反映
+darwin-rebuild switch --flake .#work   # 設定反映
 nix flake update && darwin-rebuild switch …  # パッケージ更新
 darwin-rebuild --rollback                    # ロールバック
 ```

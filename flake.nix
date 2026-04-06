@@ -97,23 +97,18 @@
     devShells.${system}.melchior = melchiorDevShell;
 
     darwinConfigurations = {
-      Macintosh = mkDarwinConfiguration {
-        configName = "Macintosh";
+      game = mkDarwinConfiguration {
+        configName = "game";
         profile = "game";
       };
 
-      "game-dev" = mkDarwinConfiguration {
-        configName = "game-dev";
-        profile = "game";
-      };
-
-      "PCmac24055" = mkDarwinConfiguration {
-        configName = "work-dev";
+      work = mkDarwinConfiguration {
+        configName = "work";
         profile = "work";
       };
 
-      "server-node" = mkDarwinConfiguration {
-        configName = "server-node";
+      server = mkDarwinConfiguration {
+        configName = "server";
         profile = "server";
       };
     };
