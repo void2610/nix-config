@@ -27,9 +27,15 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # OpenClaw: 宣言的な OpenClaw パッケージと Home Manager module
+    nix-openclaw = {
+      url = "github:openclaw/nix-openclaw";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix }:
+  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix, nix-openclaw }:
   let
     system = "aarch64-darwin";
     melchiorRepo = "/Users/shuya.izumi/Documents/GitHub/melchior";
@@ -37,7 +43,17 @@
       path = ./pkgs/melchior;
       name = "melchior-nix";
     };
-    pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+    pkgs = import nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
+          "openclaw-2026.3.12"
+        ];
+      };
+      overlays = [ nix-openclaw.overlays.default ];
+    };
     # Melchior は共有 repo なので、repo には個人用 flake を置かず、
     # 自分の nix-config 側だけで開発環境を管理する。
     melchiorDevShell = import "${melchiorNixDir}/dev-shell.nix" {
@@ -53,6 +69,19 @@
         inherit system;
         specialArgs = { inherit profile; };
         modules = [
+          ({ ... }: {
+            nixpkgs = {
+              config = {
+                allowUnfree = true;
+                permittedInsecurePackages = [
+                  # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
+                  "openclaw-2026.3.12"
+                ];
+              };
+              overlays = [ nix-openclaw.overlays.default ];
+            };
+          })
+
           (import ./nix-darwin/hosts/default.nix { inherit configName; })
 
           nix-homebrew.darwinModules.nix-homebrew
@@ -78,6 +107,9 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "backup";
+                sharedModules = [
+                  nix-openclaw.homeManagerModules.openclaw
+                ];
                 extraSpecialArgs = {
                   inherit profile;
                   inherit homeDirectory username;
