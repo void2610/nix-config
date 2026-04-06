@@ -37,7 +37,19 @@
 
   outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix, nix-openclaw }:
   let
+    # 現在は Apple Silicon Mac だけを管理対象にしている。
     system = "aarch64-darwin";
+    insecurePackages = [
+      # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
+      "openclaw-2026.3.12"
+    ];
+    # flake 全体で共通化する nixpkgs 設定。
+    commonNixpkgsConfig = {
+      allowUnfree = true;
+      permittedInsecurePackages = insecurePackages;
+    };
+    # OpenClaw を pkgs 側に差し込む overlay。
+    commonOverlays = [ nix-openclaw.overlays.default ];
     melchiorRepo = "/Users/shuya.izumi/Documents/GitHub/melchior";
     melchiorNixDir = builtins.path {
       path = ./pkgs/melchior;
@@ -45,104 +57,32 @@
     };
     pkgs = import nixpkgs {
       inherit system;
-      config = {
-        allowUnfree = true;
-        permittedInsecurePackages = [
-          # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
-          "openclaw-2026.3.12"
-        ];
-      };
-      overlays = [ nix-openclaw.overlays.default ];
+      config = commonNixpkgsConfig;
+      overlays = commonOverlays;
     };
     # Melchior は共有 repo なので、repo には個人用 flake を置かず、
     # 自分の nix-config 側だけで開発環境を管理する。
     melchiorDevShell = import "${melchiorNixDir}/dev-shell.nix" {
       inherit pkgs melchiorRepo;
     };
-
-    mkDarwinConfiguration =
-      {
-        configName,
-        profile,
-      }:
-      nix-darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = { inherit profile; };
-        modules = [
-          ({ ... }: {
-            nixpkgs = {
-              config = {
-                allowUnfree = true;
-                permittedInsecurePackages = [
-                  # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
-                  "openclaw-2026.3.12"
-                ];
-              };
-              overlays = [ nix-openclaw.overlays.default ];
-            };
-          })
-
-          (import ./nix-darwin/hosts/default.nix { inherit configName; })
-
-          nix-homebrew.darwinModules.nix-homebrew
-          ({ config, ... }: {
-            nix-homebrew = {
-              enable = true;
-              enableRosetta = false;
-              user = config.system.primaryUser;
-              autoMigrate = true;
-            };
-          })
-
-          sops-nix.darwinModules.sops
-
-          home-manager.darwinModules.home-manager
-          ({ config, ... }:
-            let
-              username = config.system.primaryUser;
-              homeDirectory = config.users.users.${username}.home;
-            in
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                sharedModules = [
-                  nix-openclaw.homeManagerModules.openclaw
-                ];
-                extraSpecialArgs = {
-                  inherit profile;
-                  inherit homeDirectory username;
-                };
-                users.${username} = {
-                  imports = [
-                    ./home-manager/users/default.nix
-                    (./home-manager/profiles + "/${profile}.nix")
-                  ];
-                };
-              };
-            })
-        ];
-      };
+    # darwinConfigurations の組み立ては flake 直下から追い出して、
+    # nix-darwin 配下で管理する。
+    darwinConfigurations = import ./nix-darwin/mk-configurations.nix {
+      inherit
+        system
+        nix-darwin
+        home-manager
+        nix-homebrew
+        sops-nix
+        nix-openclaw
+        commonNixpkgsConfig
+        commonOverlays
+        ;
+    };
   in
   {
     devShells.${system}.melchior = melchiorDevShell;
-
-    darwinConfigurations = {
-      game = mkDarwinConfiguration {
-        configName = "game";
-        profile = "game";
-      };
-
-      work = mkDarwinConfiguration {
-        configName = "work";
-        profile = "work";
-      };
-
-      server = mkDarwinConfiguration {
-        configName = "server";
-        profile = "server";
-      };
-    };
+    # game/work/server の各ホスト構成。
+    inherit darwinConfigurations;
   };
 }
