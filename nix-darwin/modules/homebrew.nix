@@ -64,6 +64,12 @@ let
   ];
 
   serverCasks = [
+    "bitwarden"
+    "claude-code"
+    "codex"
+    "element"
+    "karabiner-elements"
+    "tailscale-app"
     "unity-hub"
   ];
 
