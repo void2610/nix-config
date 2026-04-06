@@ -60,11 +60,6 @@
       config = commonNixpkgsConfig;
       overlays = commonOverlays;
     };
-    # Melchior は共有 repo なので、repo には個人用 flake を置かず、
-    # 自分の nix-config 側だけで開発環境を管理する。
-    melchiorDevShell = import "${melchiorNixDir}/dev-shell.nix" {
-      inherit pkgs melchiorRepo;
-    };
     # darwinConfigurations の組み立ては flake 直下から追い出して、
     # nix-darwin 配下で管理する。
     darwinConfigurations = import ./nix-darwin/mk-configurations.nix {
@@ -81,7 +76,17 @@
     };
   in
   {
-    devShells.${system}.melchior = melchiorDevShell;
+    # Melchior は個人用の checkout に依存するため、repo がある環境でだけ
+    # devShell を公開して他の flake 出力の評価を巻き込まないようにする。
+    devShells =
+      if builtins.pathExists melchiorRepo then
+        {
+          ${system}.melchior = import "${melchiorNixDir}/dev-shell.nix" {
+            inherit pkgs melchiorRepo;
+          };
+        }
+      else
+        { };
     # game/work/server の各ホスト構成。
     inherit darwinConfigurations;
   };
