@@ -35,6 +35,12 @@ in
         owner = username;
         mode = "600";
       };
+
+      github_runner_void2610_org_token = {
+        owner = "root";
+        group = "_github-runner";
+        mode = "440";
+      };
     };
   };
 
