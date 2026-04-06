@@ -78,7 +78,7 @@ let
   gameMasApps = commonMasApps // desktopMasApps;
   workMasApps = commonMasApps // desktopMasApps;
 
-  serverMasApps = commonMasApps;
+  serverMasApps = { };
 
   profileBrews =
     {
