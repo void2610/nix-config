@@ -44,7 +44,7 @@ let
   workBrews = [ ];
   serverBrews = [ ];
 
-  gameCasks = [
+  gameCasks = desktopCasks ++ [
     "affinity"
     "discord"
     "obs"
@@ -55,7 +55,7 @@ let
     "unity-hub"
   ];
 
-  workCasks = [
+  workCasks = desktopCasks ++ [
     "blender"
     "cloudcompare"
     "freecad"
@@ -109,7 +109,7 @@ in
     global.autoUpdate = false;
 
     brews = commonBrews ++ profileBrews;
-    casks = desktopCasks ++ profileCasks;
+    casks = profileCasks;
     masApps = profileMasApps;
   };
 }
