@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, profile, ... }:
 let
   username = config.system.primaryUser;
   homeDir = config.users.users.${username}.home;
@@ -35,11 +35,11 @@ in
         owner = username;
         mode = "600";
       };
-
+    } // lib.optionalAttrs (profile == "server") {
       github_runner_void2610_org_token = {
-        owner = "root";
-        group = "_github-runner";
-        mode = "440";
+        owner = username;
+        group = "staff";
+        mode = "600";
       };
     };
   };

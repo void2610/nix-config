@@ -6,6 +6,8 @@
     tokenFile = config.sops.secrets.github_runner_void2610_org_token.path;
     name = "m1server";
     replace = true;
+    user = config.system.primaryUser;
+    group = "staff";
 
     extraLabels = [
       "macos"
