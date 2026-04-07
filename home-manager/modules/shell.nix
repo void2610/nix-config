@@ -56,11 +56,6 @@ in
 
       eval "$(uv generate-shell-completion zsh)"
 
-      mel() {
-        cd /Users/shuya.izumi/Documents/GitHub/melchior || return 1
-        nix develop /Users/shuya.izumi/nix-config#melchior
-      }
-
       # zoxideは他のツールより後に初期化する必要があるため末尾に配置
       eval "$(zoxide init zsh --cmd cd)"
     '';

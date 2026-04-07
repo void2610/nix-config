@@ -50,11 +50,6 @@
     };
     # OpenClaw を pkgs 側に差し込む overlay。
     commonOverlays = [ nix-openclaw.overlays.default ];
-    melchiorRepo = "/Users/shuya.izumi/Documents/GitHub/melchior";
-    melchiorNixDir = builtins.path {
-      path = ./pkgs/melchior;
-      name = "melchior-nix";
-    };
     pkgs = import nixpkgs {
       inherit system;
       config = commonNixpkgsConfig;
@@ -76,17 +71,6 @@
     };
   in
   {
-    # Melchior は個人用の checkout に依存するため、repo がある環境でだけ
-    # devShell を公開して他の flake 出力の評価を巻き込まないようにする。
-    devShells =
-      if builtins.pathExists melchiorRepo then
-        {
-          ${system}.melchior = import "${melchiorNixDir}/dev-shell.nix" {
-            inherit pkgs melchiorRepo;
-          };
-        }
-      else
-        { };
     # game/work/server の各ホスト構成。
     inherit darwinConfigurations;
   };

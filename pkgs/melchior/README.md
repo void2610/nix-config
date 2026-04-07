@@ -4,7 +4,7 @@
 `~/nix-config` 側で管理するための設定です。
 
 共有リポジトリである Melchior 本体には `flake.nix` を置かず、
-自分だけが `nix develop ~/nix-config#melchior` で入れる形にしています。
+`work` profile にだけ定義した shell 関数から入る形にしています。
 
 ## 何をしているか
 
@@ -26,7 +26,7 @@
 mel
 ```
 
-これは中で `nix develop ~/nix-config#melchior` を実行します。
+これは中で Melchior 用の Nix shell を直接起動します。
 
 Melchior 用 shell に入った後は `b` でビルドと起動を行います。
 
