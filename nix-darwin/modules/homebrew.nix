@@ -111,7 +111,14 @@ in
   homebrew = {
     enable = true;
 
+    # darwin-rebuild 実行時に Homebrew 側の cask と formula も更新し、
+    # stable を追う claude-code を手動の brew upgrade なしで最新化するため有効にする。
     onActivation.cleanup = "zap";
+    # Homebrew の宣言状態を再適用するたびに更新確認も走らせ、
+    # brew 管理パッケージだけ古いまま残る運用ズレを防ぐため有効にする。
+    onActivation.upgrade = true;
+    # Homebrew の自動更新はログイン時などに勝手に走らせず、
+    # darwin-rebuild のタイミングに更新契機を寄せて挙動を読みやすくする。
     global.autoUpdate = false;
 
     brews = commonBrews ++ profileBrews;
