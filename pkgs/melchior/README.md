@@ -16,7 +16,7 @@
 - Melchior 本体の埋め込み Python が読む `site-packages` を repo 内に配置する
 - SAM 実行用の別 Python 環境も repo 内に配置する
 - `cmake` / `ninja` を wrapper 化して、壊れやすい configure 条件を毎回補う
-- shell の中で `b` を実行すると `ninja melchior_main toadflax -j8 && ./melchior_main` が動くようにする
+- shell の中で `b` を実行すると `ninja melchior_main toadflax ifc -j8 && ./melchior_main` が動くようにする
 
 ## 使い方
 
@@ -35,7 +35,7 @@ b
 ```
 
 `b` の中身は単純で、`~/Documents/GitHub/melchior/build` に移動して
-`ninja melchior_main toadflax -j8 && ./melchior_main` を呼ぶだけです。
+`ninja melchior_main toadflax ifc -j8 && ./melchior_main` を呼ぶだけです。
 
 ## ファイルの役割
 
