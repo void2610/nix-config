@@ -21,6 +21,9 @@ let
       username = "shuya";
       profile = "server";
       extraModules = [
+        # server だけは GUI 版ではなく tailscaled 常駐に切り替える。
+        # Tailscale SSH を受けたい要件を work/game に漏らさないため、ホスト限定で読む。
+        ../modules/tailscale.nix
         ../modules/power-server.nix
         ../modules/github-runner-server.nix
       ];
