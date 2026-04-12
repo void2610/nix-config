@@ -36,9 +36,17 @@ in
         mode = "600";
       };
     } // lib.optionalAttrs (profile == "server") {
+      # server だけが GitHub Actions runner を持つため、registration token もホスト限定で置く。
+      # 他 profile に配ると不要な権限面が広がるため、server のときだけ復号対象にする。
       github_runner_void2610_org_token = {
+        # runner 登録時に常用ユーザーの service から読ませるため、owner を primaryUser に合わせる。
+        # root 所有のままだと launchd 側の読み取り条件が環境差分になりやすいため明示する。
         owner = username;
+        # 通常のユーザー運用と同じ staff グループに揃えて、他 secret と扱いを一致させる。
+        # 個別グループを増やさずに権限制御を簡潔に保つため staff を使う。
         group = "staff";
+        # registration token は再登録に使えるため、他ユーザーから読めないよう最小権限に絞る。
+        # 誤読取を避けるため 600 固定にする。
         mode = "600";
       };
     };
