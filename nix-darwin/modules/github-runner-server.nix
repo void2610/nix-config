@@ -57,8 +57,27 @@ in
     # runner 自体とは別に、実ジョブで頻出する CLI を system PATH に載せる。
     # workflow ごとに毎回導入すると待ち時間が増えるため、共通ツールだけ事前配備する。
     extraPackages = with pkgs; [
+      # setup-dotnet などの公式 action は SDK 配布物の取得に curl を前提とする。
+      # GitHub hosted runner 相当の基本ツールを埋めておかないと action が即失敗するため常備する。
+      curl
+      # macOS 標準の getconf を PATH に見つけられない action があるため、runner 側でも明示的に配る。
+      # setup-dotnet の install script がここに依存しており、無いと SDK 展開前に失敗する。
+      getconf
       gh
+      # 公式 action の install script が前提とする基本コマンド群。
+      # Nix 環境では PATH に含まれないため明示的に配備する。
+      coreutils  # basename, dirname, mktemp, sort, cut, tr, wc, head, tail 等
+      findutils  # find, xargs
+      gnugrep
+      gnused
+      gawk
+      gnutar
+      gzip
+      unzip
       git
+      git-lfs
+      sops
+      jq
       nodejs_22
       yarn
     ];

@@ -75,6 +75,8 @@ let
   ];
 
   commonMasApps = {
+    # 全プロファイルで使うスリープ抑止を App Store 管理に寄せる。
+    # GUI アプリ更新を Homebrew cask と混在させないため、MAS 側で統一する。
     "Amphetamine" = 937984704;
   };
 
@@ -84,8 +86,9 @@ let
 
   gameMasApps = commonMasApps // desktopMasApps;
   workMasApps = commonMasApps // desktopMasApps;
-
-  serverMasApps = { };
+  # server でも同じスリープ抑止アプリを入れて、電源維持の責務を pmset 固定値から外す。
+  # profile ごとの差分を増やさずに済むよう、共通の MAS アプリ定義をそのまま使う。
+  serverMasApps = commonMasApps;
 
   profileBrews =
     {
