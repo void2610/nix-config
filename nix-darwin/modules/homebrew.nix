@@ -16,6 +16,7 @@ let
     "uv"
     "zlib"
     "zoxide"
+    "lldb"
   ];
 
   desktopCasks = [
