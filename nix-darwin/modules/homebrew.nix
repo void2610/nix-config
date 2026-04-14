@@ -23,6 +23,7 @@ let
     "alt-tab"
     "appcleaner"
     "arc"
+    "battery"
     "bitwarden"
     "claude-code"
     "codex"
@@ -67,6 +68,7 @@ let
   # server は GUI 版 Tailscale ではなく nix-darwin 管理の tailscaled に切り替える。
   # sandbox 制約で Tailscale SSH を受けられないため、cask から外して競合も避ける。
   serverCasks = [
+    "battery"
     "bitwarden"
     "claude-code"
     "codex"
