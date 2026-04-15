@@ -16,7 +16,6 @@ let
     "uv"
     "zlib"
     "zoxide"
-    "lldb"
   ];
 
   desktopCasks = [
@@ -43,7 +42,27 @@ let
   ];
 
   gameBrews = [ ];
-  workBrews = [ ];
+  # Melchior (https://github.com/AKARI-Inc/melchior) の macOS ビルド依存。
+  # docs/1.1.build.md の手順で必要になる C++ ライブラリと Python 3.12 を宣言し、
+  # `darwin-rebuild switch` の cleanup=zap で消えないように永続化する。
+  # jsoncpp は VTK と噛み合わない版しか brew に無いため、ソースから入れる想定で含めない。
+  workBrews = [
+    "python@3.12"
+    "cmake"
+    "pkg-config"
+    "make"
+    "boost"
+    "assimp"
+    "opencv"
+    "glfw"
+    "glew"
+    "freetype"
+    "glm"
+    "vtk"
+    "flann"
+    "pcl"
+    "bullet"
+  ];
   serverBrews = [ ];
 
   gameCasks = desktopCasks ++ [
