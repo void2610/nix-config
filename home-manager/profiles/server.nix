@@ -40,7 +40,7 @@ in
     config = {
       Label = "dev.void2610.claude-remote-listener";
       ProgramArguments = [
-        "/bin/bash"
+        "/run/current-system/sw/bin/bash"
         "${homeDir}/.claude/claude-remote-listener.sh"
       ];
       RunAtLoad = true;
