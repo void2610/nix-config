@@ -2,6 +2,7 @@
 let
   homeDir = config.home.homeDirectory;
   claudeRemoteLogDir = "${homeDir}/.claude/remote-logs";
+  claudeRemoteListenerDir = "${homeDir}/Documents/GitHub/claude-remote-listener";
 in
 {
   programs.openclaw = {
@@ -41,7 +42,7 @@ in
       Label = "dev.void2610.claude-remote-listener";
       ProgramArguments = [
         "/run/current-system/sw/bin/bash"
-        "${homeDir}/.claude/claude-remote-listener.sh"
+        "${claudeRemoteListenerDir}/claude-remote-listener.sh"
       ];
       RunAtLoad = true;
       KeepAlive = true;
