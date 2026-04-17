@@ -45,6 +45,7 @@ in
     docker-compose
     fd
     gh
+    go-task
     neofetch
     neovim
     nodejs_22

@@ -24,7 +24,7 @@ let
     "arc"
     "battery"
     "bitwarden"
-    "claude-code"
+    "claude-code@latest"
     "codex"
     "displaylink"
     "github"
@@ -89,7 +89,7 @@ let
   serverCasks = [
     "battery"
     "bitwarden"
-    "claude-code"
+    "claude-code@latest"
     "codex"
     "element"
     "karabiner-elements"
@@ -138,7 +138,7 @@ in
     enable = true;
 
     # darwin-rebuild 実行時に Homebrew 側の cask と formula も更新し、
-    # stable を追う claude-code を手動の brew upgrade なしで最新化するため有効にする。
+    # latest チャンネルを追う claude-code@latest を手動の brew upgrade なしで最新化するため有効にする。
     onActivation.cleanup = "zap";
     # Homebrew の宣言状態を再適用するたびに更新確認も走らせ、
     # brew 管理パッケージだけ古いまま残る運用ズレを防ぐため有効にする。
