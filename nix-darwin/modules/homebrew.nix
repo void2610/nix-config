@@ -24,6 +24,7 @@ let
     "claude-code@latest"
     "codex"
     "karabiner-elements"
+    "linearmouse"
   ];
 
   desktopCasks = commonCasks ++ [
@@ -90,7 +91,6 @@ let
   # sandbox 制約で Tailscale SSH を受けられないため、cask から外して競合も避ける。
   serverCasks = commonCasks ++ [
     "element"
-    "linearmouse"
     "unity-hub"
   ];
 
