@@ -49,7 +49,7 @@ let
   # docs/1.1.build.md の手順で必要になる C++ ライブラリと Python 3.12 を宣言し、
   # `darwin-rebuild switch` の cleanup=zap で消えないように永続化する。
   # jsoncpp は VTK と噛み合わない版しか brew に無いため、ソースから入れる想定で含めない。
-  workBrews = [
+  melchiorBrews = [
     "python@3.12"
     "cmake"
     "pkg-config"
@@ -66,6 +66,17 @@ let
     "pcl"
     "bullet"
   ];
+  # Docker daemon のローカル環境。
+  # Docker Desktop は業務利用ライセンスが面倒なため、Lima ベースの colima で代替する。
+  # CI (kalmia-robot-learning の .github/workflows/lint.yml の build ジョブ) は docker/build-push-action で buildx を使うため、
+  # 手元でも `docker buildx build` を同じ形で回して Dockerfile を事前検証できるよう CLI と buildx プラグインを同梱する。
+  # work 限定にするのは Docker daemon を必要とするのが kalmia のコンテナビルドだけで、game/server で VM を常駐させても無駄になるため。
+  dockerBrews = [
+    "colima"
+    "docker"
+    "docker-buildx"
+  ];
+  workBrews = melchiorBrews ++ dockerBrews;
   serverBrews = [ ];
 
   gameCasks = desktopCasks ++ [
