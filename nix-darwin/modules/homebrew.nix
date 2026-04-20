@@ -65,6 +65,7 @@ let
     "flann"
     "pcl"
     "bullet"
+    "lcov"
   ];
   # Docker daemon のローカル環境。
   # Docker Desktop は業務利用ライセンスが面倒なため、Lima ベースの colima で代替する。
