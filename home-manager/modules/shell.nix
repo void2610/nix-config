@@ -13,6 +13,9 @@ in
 
   home.sessionVariables = {
     DOTNET_ROOT = "${pkgs.dotnet-sdk}/share/dotnet";
+    # zsh-syntax-highlighting が末尾に必要なため zoxide は末尾に置けない。
+    # 誤検知となる doctor 警告を無効化する。
+    _ZO_DOCTOR = "0";
   };
 
   programs.direnv = {
@@ -56,7 +59,9 @@ in
 
       eval "$(uv generate-shell-completion zsh)"
 
-      # zoxideは他のツールより後に初期化する必要があるため末尾に配置
+      # zoxideはcompinitより後に初期化する必要がある。
+      # なおhome-managerがこの後にaliasやzsh-syntax-highlightingを追加するため
+      # 真の末尾にはならない。doctor警告は_ZO_DOCTOR=0で抑止済み。
       eval "$(zoxide init zsh --cmd cd)"
     '';
   };
