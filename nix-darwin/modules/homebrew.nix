@@ -1,6 +1,7 @@
 { profile, ... }:
 let
   commonBrews = [
+    "bat"
     "eza"
     "ninja"
     "ffmpeg"
