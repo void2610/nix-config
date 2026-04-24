@@ -76,6 +76,7 @@ let
     "colima"
     "docker"
     "docker-buildx"
+    "shellcheck"
   ];
   workBrews = melchiorBrews ++ dockerBrews;
   serverBrews = [ ];
