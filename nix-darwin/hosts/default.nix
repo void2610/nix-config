@@ -6,7 +6,12 @@ let
       hostName = "Macintosh";
       username = "shuya";
       profile = "game";
-      extraModules = [ ../modules/dock-game-dev.nix ];
+      extraModules = [
+        ../modules/dock-game-dev.nix
+        # Unity Hub から起動した Unity Editor が Nix の node 等を見つけられるようにする。
+        # GUI アプリは zsh の PATH を継承しないため、launchd レベルで PATH を設定する。
+        ../modules/gui-app-path.nix
+      ];
     };
 
     work = {
