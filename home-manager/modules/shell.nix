@@ -4,6 +4,7 @@ let
 in
 {
   home.sessionPath = [
+    "${homeDir}/.cargo/bin"
     "${homeDir}/.local/bin"
     "/opt/homebrew/bin"
     "/opt/homebrew/sbin"

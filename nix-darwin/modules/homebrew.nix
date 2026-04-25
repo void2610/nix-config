@@ -13,6 +13,7 @@ let
     "openssl@3"
     "pet"
     "ripgrep"
+    "rust"
     "terminal-notifier"
     "uv"
     "zlib"
