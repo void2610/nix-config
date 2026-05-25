@@ -45,13 +45,19 @@ in
     docker-compose
     fd
     gh
+    ghostscript
     go-task
+    imagemagick
+    lazygit
     neofetch
+    mermaid-cli
+    tectonic
     neovim
     nodejs_22
     qemu
     uloopCli
     sops
+    tree-sitter
     yarn
   ];
 }
