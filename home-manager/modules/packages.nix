@@ -46,6 +46,7 @@ in
     fd
     gh
     ghostscript
+    ghq
     go-task
     imagemagick
     lazygit
