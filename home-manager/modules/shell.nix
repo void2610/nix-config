@@ -17,6 +17,8 @@ in
     # zsh-syntax-highlighting が末尾に必要なため zoxide は末尾に置けない。
     # 誤検知となる doctor 警告を無効化する。
     _ZO_DOCTOR = "0";
+    EDITOR = "nvim";
+    VISUAL = "nvim";
   };
 
   programs.direnv = {
@@ -65,16 +67,8 @@ in
       # 真の末尾にはならない。doctor警告は_ZO_DOCTOR=0で抑止済み。
       eval "$(zoxide init zsh --cmd cd)"
 
-      # ghq + fzf: `gcd` で管理リポジトリを fuzzy 検索して cd
-      # 複数 root に対応するため `ghq list -p` で絶対パスを取得する。
-      # .venv / node_modules / vendor 等にネストされた依存リポジトリは除外する。
-      function gcd() {
-        local selected
-        selected=$(ghq list -p \
-          | grep -vE '/(\.venv|venv|node_modules|vendor|\.tox|\.pixi|\.cargo|target|Pods|Packages|site-packages)/' \
-          | fzf --preview "eza -la --icons --color=always {} 2>/dev/null || ls -la {}" --preview-window=right:50%:wrap) || return
-        [ -n "$selected" ] && cd "$selected"
-      }
+      # ghq + fzf launcher。実装は g.zsh に分離。
+      source ${./g.zsh}
     '';
   };
 }
