@@ -25,6 +25,8 @@ let
     "bitwarden"
     "claude-code@latest"
     "codex"
+    "font-jetbrains-mono-nerd-font"
+    "ghostty"
     "karabiner-elements"
     "linearmouse"
   ];

@@ -8,8 +8,15 @@ g() {
   local red=$'\e[31m' green=$'\e[32m' yellow=$'\e[33m' gray=$'\e[90m' reset=$'\e[0m'
   local listing selected repo_path
 
+  # ghq 管理外の追加リポジトリ (存在するもののみ採用)
+  local -a extra_repos
+  local p
+  for p in "$HOME/dotfiles" "$HOME/nix-config"; do
+    [[ -d $p/.git ]] && extra_repos+=("$p")
+  done
+
   listing=$(
-    ghq list -p \
+    { ghq list -p; printf '%s\n' "${extra_repos[@]}"; } \
       | grep -vE '/(\.venv|venv|node_modules|vendor|\.tox|\.pixi|\.cargo|target|Pods|Packages|site-packages)/' \
       | xargs -P 16 -I {} zsh -c '
           repo=$1; R=$2; G=$3; Y=$4; W=$5; E=$6
