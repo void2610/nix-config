@@ -71,19 +71,32 @@ let
     "bullet"
     "lcov"
   ];
+
   # Docker daemon のローカル環境。
   # Docker Desktop は業務利用ライセンスが面倒なため、Lima ベースの colima で代替する。
   # CI (kalmia-robot-learning の .github/workflows/lint.yml の build ジョブ) は docker/build-push-action で buildx を使うため、
   # 手元でも `docker buildx build` を同じ形で回して Dockerfile を事前検証できるよう CLI と buildx プラグインを同梱する。
-  # work 限定にするのは Docker daemon を必要とするのが kalmia のコンテナビルドだけで、game/server で VM を常駐させても無駄になるため。
   dockerBrews = [
     "colima"
     "docker"
     "docker-buildx"
     "shellcheck"
   ];
-  workBrews = melchiorBrews ++ dockerBrews;
+
+  workOnlyBrews = [ "noclamshell" ];
+  workBrews = melchiorBrews ++ dockerBrews ++ workOnlyBrews;
   serverBrews = [ ];
+
+  gameTaps = [ ];
+  workTaps = [ "pirj/noclamshell" ];
+  serverTaps = [ ];
+
+  profileTaps =
+    {
+      game = gameTaps;
+      work = workTaps;
+      server = serverTaps;
+    }.${profile} or [ ];
 
   gameCasks = desktopCasks ++ [
     "affinity"
@@ -112,8 +125,6 @@ let
   ];
 
   commonMasApps = {
-    # 全プロファイルで使うスリープ抑止を App Store 管理に寄せる。
-    # GUI アプリ更新を Homebrew cask と混在させないため、MAS 側で統一する。
     "Amphetamine" = 937984704;
   };
 
@@ -123,8 +134,6 @@ let
 
   gameMasApps = commonMasApps // desktopMasApps;
   workMasApps = commonMasApps // desktopMasApps;
-  # server でも同じスリープ抑止アプリを入れて、電源維持の責務を pmset 固定値から外す。
-  # profile ごとの差分を増やさずに済むよう、共通の MAS アプリ定義をそのまま使う。
   serverMasApps = commonMasApps;
 
   profileBrews =
@@ -165,5 +174,6 @@ in
     brews = commonBrews ++ profileBrews;
     casks = profileCasks;
     masApps = profileMasApps;
+    taps = profileTaps;
   };
 }
