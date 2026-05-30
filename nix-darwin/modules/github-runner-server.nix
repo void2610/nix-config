@@ -29,6 +29,10 @@ let
   };
   # runner 本体の設定は共通化し、名前ごとの差分だけをパス計算へ委ねる。
   # runner 数を増やしてもラベルや導入パッケージの揺れを防ぎ、運用を単純化する。
+  # nodejs-20 が nixpkgs unstable でビルド失敗するため、nodejs_22 で代替する。
+  # runner 内で node20 アクションを実行する際に node22 が使われるが互換性に問題なし。
+  github-runner = pkgs.github-runner.override { nodejs_20 = pkgs.nodejs_22; };
+
   mkRunner = name:
     let
       # runner 名ごとに分離した state/log/work の場所を束ねる。
@@ -39,6 +43,8 @@ let
       # runner の launchd 登録を有効にして、再起動後も自動で復帰させる。
       # CI 実行待ちのたびに手動起動が必要だと常設 runner の意味が薄れるため有効化する。
       enable = true;
+      # nodejs-20 ビルド失敗を回避した github-runner パッケージを使う。
+      package = github-runner;
       # 組織配下のリポジトリから共通で拾える runner にしたいので org URL を使う。
       # repo 単位に閉じると追加リポジトリごとに runner 定義が増えるため、まずは org スコープに寄せる。
       url = "https://github.com/void2610-org";

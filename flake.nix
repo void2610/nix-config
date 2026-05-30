@@ -40,8 +40,6 @@
     # 現在は Apple Silicon Mac だけを管理対象にしている。
     system = "aarch64-darwin";
     insecurePackages = [
-      # nixpkgs 側で insecure 扱いだが、server で明示的に利用する。
-      "openclaw-2026.3.12"
     ];
     # flake 全体で共通化する nixpkgs 設定。
     commonNixpkgsConfig = {
