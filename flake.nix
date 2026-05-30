@@ -18,8 +18,16 @@
     };
 
     # nix-homebrew: Homebrew の宣言的管理
+    # brew-src は 5.1.14 に固定する。5.1.1 では cask_struct_generator.rb の
+    # process_depends_on に `macos: {}` の空 hash を弾くガードが無く、
+    # `dep_type.to_sym` が nil で `undefined method 'to_sym' for nil` を発生させる。
+    # 5.1.14 で `next [key, :any] unless dep_type` のガードが入って解消する。
     nix-homebrew = {
       url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src = {
+        url = "github:Homebrew/brew/5.1.14";
+        flake = false;
+      };
     };
 
     # sops-nix: 暗号化した secrets の配置
