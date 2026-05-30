@@ -48,7 +48,6 @@ let
     "zed"
   ];
 
-  gameBrews = [ ];
   # Melchior (https://github.com/AKARI-Inc/melchior) の macOS ビルド依存。
   # docs/1.1.build.md の手順で必要になる C++ ライブラリと Python 3.12 を宣言し、
   # `darwin-rebuild switch` の cleanup=zap で消えないように永続化する。
@@ -84,78 +83,62 @@ let
   ];
 
   workOnlyBrews = [ "noclamshell" ];
-  workBrews = melchiorBrews ++ dockerBrews ++ workOnlyBrews;
-  serverBrews = [ ];
-
-  gameTaps = [ ];
-  workTaps = [ "pirj/noclamshell" ];
-  serverTaps = [ ];
-
-  profileTaps =
-    {
-      game = gameTaps;
-      work = workTaps;
-      server = serverTaps;
-    }.${profile} or [ ];
-
-  gameCasks = desktopCasks ++ [
-    "affinity"
-    "discord"
-    "obs"
-    "rider"
-    "sf-symbols"
-    "steam"
-    "typeless"
-    "unity-hub"
-  ];
-
-  workCasks = desktopCasks ++ [
-    "blender"
-    "cloudcompare"
-    "freecad"
-    "google-chrome"
-    "zoom"
-  ];
-
-  # server は GUI 版 Tailscale ではなく nix-darwin 管理の tailscaled に切り替える。
-  # sandbox 制約で Tailscale SSH を受けられないため、cask から外して競合も避ける。
-  serverCasks = commonCasks ++ [
-    "element"
-    "unity-hub"
-  ];
 
   commonMasApps = {
     "Amphetamine" = 937984704;
   };
 
-  desktopMasApps = {
+  desktopMasApps = commonMasApps // {
     "RunCat" = 1429033973;
   };
 
-  gameMasApps = commonMasApps // desktopMasApps;
-  workMasApps = commonMasApps // desktopMasApps;
-  serverMasApps = commonMasApps;
+  # プロファイルごとの brews / casks / masApps / taps をまとめて宣言する。
+  # 末尾の selector がここから profile に対応する 1 エントリを引く。
+  profiles = {
+    game = {
+      brews = [ ];
+      casks = desktopCasks ++ [
+        "affinity"
+        "discord"
+        "obs"
+        "rider"
+        "sf-symbols"
+        "steam"
+        "typeless"
+        "unity-hub"
+      ];
+      masApps = desktopMasApps;
+      taps = [ ];
+    };
 
-  profileBrews =
-    {
-      game = gameBrews;
-      work = workBrews;
-      server = serverBrews;
-    }.${profile} or [ ];
+    work = {
+      brews = melchiorBrews ++ dockerBrews ++ workOnlyBrews;
+      casks = desktopCasks ++ [
+        "blender"
+        "cloudcompare"
+        "freecad"
+        "google-chrome"
+        "zoom"
+      ];
+      masApps = desktopMasApps;
+      taps = [ "pirj/noclamshell" ];
+    };
 
-  profileCasks =
-    {
-      game = gameCasks;
-      work = workCasks;
-      server = serverCasks;
-    }.${profile} or [ ];
+    # server は GUI 版 Tailscale ではなく nix-darwin 管理の tailscaled に切り替える。
+    # sandbox 制約で Tailscale SSH を受けられないため、cask から外して競合も避ける。
+    server = {
+      brews = [ ];
+      casks = commonCasks ++ [
+        "element"
+        "unity-hub"
+      ];
+      masApps = commonMasApps;
+      taps = [ ];
+    };
+  };
 
-  profileMasApps =
-    {
-      game = gameMasApps;
-      work = workMasApps;
-      server = serverMasApps;
-    }.${profile} or { };
+  selected =
+    profiles.${profile} or (throw "homebrew.nix: 未知の profile \"${profile}\" です (有効: ${toString (builtins.attrNames profiles)})");
 in
 {
   homebrew = {
@@ -171,9 +154,9 @@ in
     # darwin-rebuild のタイミングに更新契機を寄せて挙動を読みやすくする。
     global.autoUpdate = false;
 
-    brews = commonBrews ++ profileBrews;
-    casks = profileCasks;
-    masApps = profileMasApps;
-    taps = profileTaps;
+    brews = commonBrews ++ selected.brews;
+    casks = selected.casks;
+    masApps = selected.masApps;
+    taps = selected.taps;
   };
 }
