@@ -51,14 +51,16 @@ in
             git commit -m "$msg"
           '';
         }
-        # `C` を上書きし、ステージ済み diff から claude でコミットメッセージを生成する。
-        # 生成中はスピナーを表示し、生成後に nvim で編集してコミットする。
+        # `C` を上書きし、ステージ済み diff から claude でコミットメッセージを生成して即コミットする。
+        # 別ウィンドウ（terminal サブプロセスや nvim）を出さず、生成中は loadingText のスピナーを表示する。
+        # 生成メッセージを編集したい場合は、コミット後に `r`（reword）で内蔵パネルから直す。
         {
           key = "C";
           context = "files";
           description = "Commit (LLM-generated message)";
+          loadingText = "Generating commit message with claude...";
           command = "lazygit-llm-commit-msg";
-          output = "terminal";
+          output = "log";
         }
       ];
     };
