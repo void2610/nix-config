@@ -10,10 +10,28 @@ if git diff --cached --quiet; then
   exit 1
 fi
 
-# 英語の type prefix（feat:/fix: 等）を付けた Conventional Commits 形式で、本文は日本語で生成する。
-msg=$(git diff --cached | claude -p 'Write a concise one-line git commit message summarizing the staged changes. Follow the Conventional Commits format with an English type prefix (feat:, fix:, refactor:, docs:, chore:, etc.) but write the description in Japanese. Output only the message text, no surrounding quotes or explanation.' | head -n1)
+# diff を一度だけ取得し、再試行で使い回す。
+diff=$(git diff --cached)
+prompt='Write a concise one-line git commit message summarizing the staged changes. Follow the Conventional Commits format with an English type prefix (feat:, fix:, refactor:, docs:, chore:, etc.) but write the description in Japanese. Output only the message text, no surrounding quotes or explanation.'
 
-# 生成に失敗（空出力）した場合はコミットせず終了する。
+# Conventional Commits 形式（type[scope][!]: 本文）を満たすまで最大3回試行する。
+# claude が前置きや引用符を付けて返した場合などをバリデーションで弾く。
+max_attempts=3
+attempt=1
+msg=""
+while [ "$attempt" -le "$max_attempts" ]; do
+  # 1行目を取得し、前後の空白を除去する。
+  candidate=$(printf '%s' "$diff" | claude -p "$prompt" | head -n1 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+  # 簡易バリデーション: 「type: 本文」形式か（feat:, fix(scope):, refactor!: など）。
+  if printf '%s' "$candidate" | grep -Eq '^[a-z]+(\([^)]+\))?!?: .+'; then
+    msg="$candidate"
+    break
+  fi
+  echo "生成結果が Conventional Commits 形式ではないため再試行します（$attempt/$max_attempts）: $candidate" >&2
+  attempt=$((attempt + 1))
+done
+
+# 3回試しても妥当なメッセージが得られなければコミットせず終了する。
 if [ -z "$msg" ]; then
   echo 'コミットメッセージの生成に失敗しました。' >&2
   exit 1
