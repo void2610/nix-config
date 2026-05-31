@@ -13,6 +13,8 @@ in
       # output = "terminal" のサブプロセス終了後に出る
       # 「Press enter to return to lazygit」の確認を省く。
       promptToReturnFromSubprocess = false;
+      # loadingText 表示時のスピナーが速すぎるので、回転を緩める（デフォルト 50ms → 100ms）。
+      gui.spinner.rate = 200;
       customCommands = [
         # `c` を上書きし、空のコミットメッセージ入力欄を出す。
         # 空のままエンターすると、選択中ファイルの git status を見て
