@@ -32,6 +32,9 @@ in
   programs.lazygit = {
     enable = true;
     settings = {
+      # output = "terminal" のサブプロセス終了後に出る
+      # 「Press enter to return to lazygit」の確認を省く。
+      promptToReturnFromSubprocess = false;
       customCommands = [
         # `c` を上書きし、空のコミットメッセージ入力欄を出す。
         # 空のままエンターすると、選択中ファイルの git status を見て
