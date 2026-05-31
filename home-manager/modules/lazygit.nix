@@ -1,30 +1,8 @@
 { pkgs, ... }:
 let
   # ステージ済み diff から claude でコミットメッセージを生成し、nvim で編集してコミットするスクリプト。
-  # 生成中はスピナーを表示してフリーズに見えないようにする。
-  llmCommitMsg = pkgs.writeShellScriptBin "lazygit-llm-commit-msg" ''
-    set -eu
-    # 前回までの実行ログ（スクロールバック含む）を消して画面をまっさらにする。
-    printf '\033[2J\033[3J\033[H'
-    tmp=$(mktemp)
-    trap 'rm -f "$tmp"' EXIT
-
-    # claude をバックグラウンドで実行し、その間スピナーを回す。
-    ( git diff --cached | claude -p 'Write a concise one-line git commit message summarizing the staged changes. Output only the message text, no surrounding quotes or explanation.' | head -n1 > "$tmp" ) &
-    pid=$!
-    spin='-\|/'
-    i=0
-    while kill -0 "$pid" 2>/dev/null; do
-      i=$(( (i + 1) % 4 ))
-      printf '\rGenerating commit message with claude... %s' "''${spin:$i:1}"
-      sleep 0.1
-    done
-    wait "$pid"
-    printf '\r\033[K'
-
-    # 生成メッセージをプリフィルした状態で nvim を開き、編集・保存でコミット。
-    git commit -e -F "$tmp"
-  '';
+  # 実装は lazygit-llm-commit-msg.sh に分離。
+  llmCommitMsg = pkgs.writeShellScriptBin "lazygit-llm-commit-msg" (builtins.readFile ./lazygit-llm-commit-msg.sh);
 in
 {
   home.packages = [ llmCommitMsg ];
