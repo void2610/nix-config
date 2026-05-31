@@ -4,6 +4,8 @@ let
   # 生成中はスピナーを表示してフリーズに見えないようにする。
   llmCommitMsg = pkgs.writeShellScriptBin "lazygit-llm-commit-msg" ''
     set -eu
+    # 前回までの実行ログ（スクロールバック含む）を消して画面をまっさらにする。
+    printf '\033[2J\033[3J\033[H'
     tmp=$(mktemp)
     trap 'rm -f "$tmp"' EXIT
 
