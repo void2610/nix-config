@@ -49,7 +49,6 @@ in
     ghq
     go-task
     imagemagick
-    lazygit
     macism
     neofetch
     mermaid-cli
