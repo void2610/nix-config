@@ -19,6 +19,10 @@ in
     _ZO_DOCTOR = "0";
     EDITOR = "nvim";
     VISUAL = "nvim";
+    # lazygit の設定は ~/dotfiles/.config/lazygit/config.yml で管理する。
+    # macOS の lazygit はデフォルトで ~/Library/Application Support/lazygit を見るので、
+    # LG_CONFIG_FILE で dotfiles 側を明示的に読み込ませる。
+    LG_CONFIG_FILE = "${homeDir}/.config/lazygit/config.yml";
   };
 
   programs.direnv = {

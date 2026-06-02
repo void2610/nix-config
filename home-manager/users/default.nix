@@ -3,7 +3,6 @@
   imports = [
     ../modules/packages.nix
     ../modules/git.nix
-    ../modules/lazygit.nix
     ../modules/shell.nix
     ../modules/tmux.nix
   ];

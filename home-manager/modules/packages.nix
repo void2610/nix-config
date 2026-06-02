@@ -41,6 +41,7 @@ in
     colima
     dotnet-sdk
     claudeCodeUi
+    delta
     docker-client
     docker-compose
     fd
@@ -49,6 +50,7 @@ in
     ghq
     go-task
     imagemagick
+    lazygit
     macism
     neofetch
     mermaid-cli
