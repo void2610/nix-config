@@ -5,7 +5,7 @@ let
   llmCommitMsg = pkgs.writeShellScriptBin "lazygit-llm-commit-msg" (builtins.readFile ./lazygit-llm-commit-msg.sh);
 in
 {
-  home.packages = [ llmCommitMsg ];
+  home.packages = [ llmCommitMsg pkgs.delta ];
 
   programs.lazygit = {
     enable = true;
@@ -15,6 +15,13 @@ in
       promptToReturnFromSubprocess = false;
       # loadingText 表示時のスピナーが速すぎるので、回転を緩める（デフォルト 50ms → 100ms）。
       gui.spinner.rate = 200;
+      # diff ビューをシンタックスハイライト付きで表示するため delta をページャーに使う。
+      git.pagers = [
+        {
+          colorArg = "always";
+          pager = "delta --paging=never --line-numbers --hunk-header-style=omit";
+        }
+      ];
       customCommands = [
         # `c` を上書きし、空のコミットメッセージ入力欄を出す。
         # 空のままエンターすると、選択中ファイルの git status を見て
