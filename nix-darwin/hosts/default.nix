@@ -18,10 +18,7 @@ let
       hostName = "PCmac24055";
       username = "shuya.izumi";
       profile = "work";
-      extraModules = [
-        # 外部ディスプレイ接続時のクラムシェルスリープ抑止を打ち消す noclamshell を work でだけ launchd 常駐させる。
-        ../modules/noclamshell-work.nix
-      ];
+      extraModules = [ ];
     };
 
     server = {

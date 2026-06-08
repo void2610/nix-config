@@ -9,9 +9,11 @@ let
     "go"
     "git-lfs"
     "jq"
+    "just"
     "mas"
     "openssl@3"
     "pet"
+    "pnpm"
     "poetry"
     "ripgrep"
     "rust"
@@ -55,6 +57,8 @@ let
   # jsoncpp は VTK と噛み合わない版しか brew に無いため、ソースから入れる想定で含めない。
   melchiorBrews = [
     "python@3.12"
+    "pinocchio"
+    "coal"
     "cmake"
     "pkg-config"
     "make"
@@ -83,9 +87,8 @@ let
     "shellcheck"
   ];
 
-  workOnlyBrews = [ 
+  workOnlyBrews = [
     "awscli"
-    "noclamshell"
   ];
 
   commonMasApps = {
@@ -127,7 +130,7 @@ let
         "zoom"
       ];
       masApps = desktopMasApps;
-      taps = [ "pirj/noclamshell" ];
+      taps = [ ];
     };
 
     # server は GUI 版 Tailscale ではなく nix-darwin 管理の tailscaled に切り替える。

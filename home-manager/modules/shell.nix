@@ -50,6 +50,7 @@ in
     syntaxHighlighting.enable = true;
     shellAliases = {
       ur = "uv run python";
+      v = "nvim";
       vi = "nvim";
       sftp = "sftp -P 25288 shuya@nitfccuda.mydns.jp";
       ls = "eza --icons --group-directories-first";
