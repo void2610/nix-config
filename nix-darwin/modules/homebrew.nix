@@ -82,7 +82,10 @@ let
     "shellcheck"
   ];
 
-  workOnlyBrews = [ "noclamshell" ];
+  workOnlyBrews = [ 
+    "awscli"
+    "noclamshell"
+  ];
 
   commonMasApps = {
     "Amphetamine" = 937984704;
@@ -117,7 +120,9 @@ let
         "blender"
         "cloudcompare"
         "freecad"
+        "firefox"
         "google-chrome"
+        "session-manager-plugin"
         "zoom"
       ];
       masApps = desktopMasApps;
