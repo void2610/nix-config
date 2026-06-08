@@ -12,6 +12,7 @@ let
     "mas"
     "openssl@3"
     "pet"
+    "poetry"
     "ripgrep"
     "rust"
     "terminal-notifier"
