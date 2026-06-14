@@ -4,13 +4,13 @@ pkgs.stdenv.mkDerivation rec {
   # ラッパー生成先や Home Manager 側の参照と一致させ、名前ずれで更新時に壊れないようにする。
   pname = "uloop-cli";
   # Unity CLI Loop の新機能と既存バグ修正を取り込むため、npm の最新公開版を明示的に固定する。
-  version = "2.1.4";
+  version = "2.1.8";
 
   # npm レジストリの tarball を直接取得する。
   # lockfile を持たない単体パッケージなので、URL とハッシュを Nix 側で固定して再現性を保つ。
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/uloop-cli/-/uloop-cli-${version}.tgz";
-    hash = "sha512-XtgjLvuC/uiF4g4QvqiYiLbSHuxQtc6JQJWL+k75Euoz+6bxFpdhsODj1uenQ+aHjt0f3HaidkVGaGwmHCaXdg==";
+    hash = "sha512-e/VrvZXoMhM6wOvvEqb9bj3j3pMk3JH+0V6aNoX0u/Pl/8E9I0Rs6eQvGM8sP8O46PyU7UZpLfVVrI97/RfgHA==";
   };
 
   # Node 実行用の薄いラッパーだけを作る構成なので、ビルド時依存は makeWrapper に絞る。
