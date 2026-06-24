@@ -19,6 +19,7 @@ let
     "rust"
     "terminal-notifier"
     "uv"
+    "yazi"
     "zlib"
     "zoxide"
   ];

@@ -74,6 +74,9 @@ in
 
       # ghq + fzf launcher。実装は g.zsh に分離。
       source ${./g.zsh}
+
+      # yazi launcher。実装は y.zsh に分離。
+      source ${./y.zsh}
     '';
   };
 }
