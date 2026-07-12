@@ -108,12 +108,14 @@ let
         "obs"
         "rider"
         "sf-symbols"
+        # Windows 版 Steam ゲーム用 Wine ラッパー (Wineskin/Kegworks 後継)。要 Rosetta 2。
+        "sikarugir-app/sikarugir/sikarugir"
         "steam"
         "typeless"
         "unity-hub"
       ];
       masApps = desktopMasApps;
-      taps = [ ];
+      taps = [ "sikarugir-app/sikarugir" ];
     };
 
     work = {
