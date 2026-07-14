@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 let
   homeDir = config.home.homeDirectory;
 in
@@ -11,7 +11,6 @@ in
   ];
 
   home.sessionVariables = {
-    DOTNET_ROOT = "${pkgs.dotnet-sdk}/share/dotnet";
     # zoxide を末尾に置けない (zsh-syntax-highlighting が末尾必須) ための doctor 誤検知警告を抑止
     _ZO_DOCTOR = "0";
     EDITOR = "nvim";

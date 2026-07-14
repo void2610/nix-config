@@ -36,9 +36,6 @@ in
     clang-tools
     cmake
     delta
-    docker-client
-    docker-compose
-    dotnet-sdk
     fd
     gh
     gh-dash
@@ -70,7 +67,6 @@ in
     openssl
     pet
     pnpm
-    poetry
     ripgrep
     rustc
     uv
