@@ -43,41 +43,62 @@
     };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew, sops-nix, nix-openclaw }:
-  let
-    # 現在は Apple Silicon Mac だけを管理対象にしている。
-    system = "aarch64-darwin";
-    insecurePackages = [
-    ];
-    # flake 全体で共通化する nixpkgs 設定。
-    commonNixpkgsConfig = {
-      allowUnfree = true;
-      permittedInsecurePackages = insecurePackages;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      nix-homebrew,
+      sops-nix,
+      nix-openclaw,
+    }:
+    let
+      # darwin 側は Apple Silicon Mac だけを管理対象にしている。
+      system = "aarch64-darwin";
+      insecurePackages = [
+      ];
+      # flake 全体で共通化する nixpkgs 設定。
+      commonNixpkgsConfig = {
+        allowUnfree = true;
+        permittedInsecurePackages = insecurePackages;
+      };
+      # OpenClaw を pkgs 側に差し込む overlay。
+      commonOverlays = [ nix-openclaw.overlays.default ];
+      pkgs = import nixpkgs {
+        inherit system;
+        config = commonNixpkgsConfig;
+        overlays = commonOverlays;
+      };
+      # Ubuntu 向け standalone home-manager の組み立ては home-linux 配下で管理する。
+      homeConfigurations = import ./home-linux/mk-home-configurations.nix {
+        inherit
+          nixpkgs
+          home-manager
+          nix-openclaw
+          commonNixpkgsConfig
+          commonOverlays
+          ;
+      };
+      # darwinConfigurations の組み立ては flake 直下から追い出して、
+      # nix-darwin 配下で管理する。
+      darwinConfigurations = import ./nix-darwin/mk-configurations.nix {
+        inherit
+          system
+          nix-darwin
+          home-manager
+          nix-homebrew
+          sops-nix
+          nix-openclaw
+          commonNixpkgsConfig
+          commonOverlays
+          ;
+      };
+    in
+    {
+      # game/work/server の各ホスト構成。
+      inherit darwinConfigurations;
+      # ubuntu の standalone home-manager 構成。
+      inherit homeConfigurations;
     };
-    # OpenClaw を pkgs 側に差し込む overlay。
-    commonOverlays = [ nix-openclaw.overlays.default ];
-    pkgs = import nixpkgs {
-      inherit system;
-      config = commonNixpkgsConfig;
-      overlays = commonOverlays;
-    };
-    # darwinConfigurations の組み立ては flake 直下から追い出して、
-    # nix-darwin 配下で管理する。
-    darwinConfigurations = import ./nix-darwin/mk-configurations.nix {
-      inherit
-        system
-        nix-darwin
-        home-manager
-        nix-homebrew
-        sops-nix
-        nix-openclaw
-        commonNixpkgsConfig
-        commonOverlays
-        ;
-    };
-  in
-  {
-    # game/work/server の各ホスト構成。
-    inherit darwinConfigurations;
-  };
 }
