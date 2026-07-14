@@ -24,7 +24,10 @@
       # （id_github_rsa を使うため）
       "url \"git@github:\"".insteadOf = "git@github.com:";
       # ghq の管理対象ルート。複数指定すると `ghq list` がすべて列挙する。
-      ghq.root = [ "~/ghq" "~/Documents/GitHub" ];
+      ghq.root = [
+        "~/ghq"
+        "~/Documents/GitHub"
+      ];
     };
   };
 }

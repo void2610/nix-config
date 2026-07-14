@@ -139,7 +139,6 @@
       TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
     };
 
-
     WindowManager = {
       AppWindowGroupingBehavior = true;
       AutoHide = false;

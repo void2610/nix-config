@@ -39,15 +39,18 @@ in
   inherit hosts;
 
   # 各ホスト共通のベース module に、ホスト固有値だけを注入する。
-  moduleFor = configName:
+  moduleFor =
+    configName:
     let
       cfg = hosts.${configName};
     in
-    { ... }: {
+    { ... }:
+    {
       imports = [
         ../modules/base.nix
         ../modules/homebrew.nix
-      ] ++ cfg.extraModules;
+      ]
+      ++ cfg.extraModules;
 
       networking.hostName = cfg.hostName;
       system.primaryUser = cfg.username;

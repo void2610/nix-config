@@ -1,4 +1,9 @@
-{ homeDirectory, username, config, ... }:
+{
+  homeDirectory,
+  username,
+  config,
+  ...
+}:
 {
   imports = [
     ../modules/packages.nix

@@ -21,18 +21,22 @@ let
   };
 
   # Homebrew 自体は全ホストで有効化し、利用ユーザーだけホストごとに追従させる。
-  nixHomebrewModule = { config, ... }: {
-    nix-homebrew = {
-      enable = true;
-      enableRosetta = false;
-      user = config.system.primaryUser;
-      autoMigrate = true;
+  nixHomebrewModule =
+    { config, ... }:
+    {
+      nix-homebrew = {
+        enable = true;
+        enableRosetta = false;
+        user = config.system.primaryUser;
+        autoMigrate = true;
+      };
     };
-  };
 
   # Home Manager は primaryUser に対してだけ差し込み、
   # profile ごとの user 設定ファイルを読み込む。
-  homeManagerModule = profile: { config, ... }:
+  homeManagerModule =
+    profile:
+    { config, ... }:
     let
       username = config.system.primaryUser;
       homeDirectory = config.users.users.${username}.home;
@@ -59,7 +63,8 @@ let
     };
 
   # 1 ホスト分の darwinSystem を組み立てる。
-  mkDarwinConfiguration = configName:
+  mkDarwinConfiguration =
+    configName:
     let
       cfg = hostDefs.hosts.${configName};
     in
@@ -80,6 +85,4 @@ let
     };
 in
 # hosts/default.nix に定義した全ホストから flake の出力を自動生成する。
-builtins.mapAttrs
-  (configName: _: mkDarwinConfiguration configName)
-  hostDefs.hosts
+builtins.mapAttrs (configName: _: mkDarwinConfiguration configName) hostDefs.hosts

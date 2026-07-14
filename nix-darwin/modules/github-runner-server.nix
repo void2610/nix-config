@@ -33,7 +33,8 @@ let
   # runner 内で node20 アクションを実行する際に node22 が使われるが互換性に問題なし。
   github-runner = pkgs.github-runner.override { nodejs_20 = pkgs.nodejs_22; };
 
-  mkRunner = name:
+  mkRunner =
+    name:
     let
       # runner 名ごとに分離した state/log/work の場所を束ねる。
       # 各 runner が前回の workspace を保持し続ける前提なので、ここで経路を固定する。
@@ -88,8 +89,8 @@ let
         gh
         # 公式 action の install script が前提とする基本コマンド群。
         # Nix 環境では PATH に含まれないため明示的に配備する。
-        coreutils  # basename, dirname, mktemp, sort, cut, tr, wc, head, tail 等
-        findutils  # find, xargs
+        coreutils # basename, dirname, mktemp, sort, cut, tr, wc, head, tail 等
+        findutils # find, xargs
         gnugrep
         gnused
         gawk

@@ -40,7 +40,10 @@ in
   programs.zoxide = {
     enable = true;
     enableZshIntegration = false;
-    options = [ "--cmd" "cd" ];
+    options = [
+      "--cmd"
+      "cd"
+    ];
   };
 
   programs.zsh = {

@@ -1,4 +1,9 @@
-{ config, lib, profile, ... }:
+{
+  config,
+  lib,
+  profile,
+  ...
+}:
 let
   username = config.system.primaryUser;
   homeDir = config.users.users.${username}.home;
@@ -9,7 +14,8 @@ in
   sops = {
     age.keyFile = "${homeDir}/.config/sops/age/keys.txt";
     defaultSopsFormat = "yaml";
-  } // lib.optionalAttrs hasSecretsFile {
+  }
+  // lib.optionalAttrs hasSecretsFile {
     defaultSopsFile = secretsFile;
     secrets = {
       ssh_config = {
@@ -35,7 +41,8 @@ in
         owner = username;
         mode = "600";
       };
-    } // lib.optionalAttrs (profile == "server") {
+    }
+    // lib.optionalAttrs (profile == "server") {
       # server だけが GitHub Actions runner を持つため、registration token もホスト限定で置く。
       # 他 profile に配ると不要な権限面が広がるため、server のときだけ復号対象にする。
       github_runner_void2610_org_token = {

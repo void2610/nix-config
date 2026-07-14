@@ -145,7 +145,8 @@ let
   };
 
   selected =
-    profiles.${profile} or (throw "homebrew.nix: 未知の profile \"${profile}\" です (有効: ${toString (builtins.attrNames profiles)})");
+    profiles.${profile}
+      or (throw "homebrew.nix: 未知の profile \"${profile}\" です (有効: ${toString (builtins.attrNames profiles)})");
 in
 {
   homebrew = {

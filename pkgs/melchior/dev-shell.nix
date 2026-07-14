@@ -31,38 +31,40 @@ let
 
   # Melchior 本体の埋め込み Python が見る package 群。
   # ここには OpenCV を入れず、埋め込み Python 側のネイティブ衝突を避ける。
-  melchiorPythonPackages = ps: with ps; [
-    numpy
-    scipy
-    ezdxf
-    shapely
-    numba
-    requests
-    tqdm
-    matplotlib
-    tensorboard
-    laspy
-    coverage
-    pyproj
-    staticmap
-    torch
-    torchvision
-    pyquaternionNoTests
-  ];
+  melchiorPythonPackages =
+    ps: with ps; [
+      numpy
+      scipy
+      ezdxf
+      shapely
+      numba
+      requests
+      tqdm
+      matplotlib
+      tensorboard
+      laspy
+      coverage
+      pyproj
+      staticmap
+      torch
+      torchvision
+      pyquaternionNoTests
+    ];
 
   # SAM 実行用の別プロセス Python で使う package 群。
   # こちらには OpenCV を含める。
-  melchiorSamPackages = ps: with ps; [
-    opencv-python
-    torch
-    torchvision
-    segmentAnything
-  ];
+  melchiorSamPackages =
+    ps: with ps; [
+      opencv-python
+      torch
+      torchvision
+      segmentAnything
+    ];
 
   # Melchior 本体用 Python と、CLI / SAM 実行用 Python を分ける。
   melchiorPython = pkgs.python312.withPackages melchiorPythonPackages;
-  melchiorCliPython = pkgs.python312.withPackages (ps:
-    (melchiorPythonPackages ps) ++ (melchiorSamPackages ps)
+  melchiorCliPython = pkgs.python312.withPackages (
+    ps: (melchiorPythonPackages ps) ++ (melchiorSamPackages ps)
   );
 
   melchiorEmbeddedSitePackages = "${melchiorPython}/${melchiorPython.sitePackages}";
