@@ -1,0 +1,4 @@
+{
+  "test": "darwin-rebuild build --flake .#work && nix eval .#homeConfigurations.ubuntu.activationPackage.drvPath",
+  "format": "nix fmt"
+}
