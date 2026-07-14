@@ -129,4 +129,3 @@ git config user.email
 ### 補足
 
 - ユーザー名 `shuya` / ホームディレクトリ `/home/shuya` を前提にしている (`home-linux/hosts/default.nix`)
-- Docker daemon は apt 側で入れる (nix は docker-client / docker-compose のみ)
