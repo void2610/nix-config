@@ -72,3 +72,61 @@ ls -la ~/.ssh
 - 最初に必要なのは age の秘密鍵だけ
 - SSH 鍵自体は `secrets/common.yaml` から復元される
 - `secrets/common.yaml` を復号できなくなるので、`~/.config/sops/age/keys.txt` は必ず別保管する
+
+## Ubuntu (aarch64-linux)
+
+Ubuntu では standalone home-manager でユーザー環境 (CLI) のみを管理する。sops の age 鍵は不要。
+
+### 1. Nix を入れる
+
+```bash
+curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+```
+
+Nix インストール後、新しいシェルを開く。
+
+### 2. リポジトリを clone する
+
+```bash
+git clone https://github.com/void2610/.nix-config.git ~/.nix-config
+git clone https://github.com/void2610/dotfiles.git ~/dotfiles
+```
+
+### 3. home-manager を適用する
+
+```bash
+cd ~/.nix-config
+nix run home-manager/master -- switch --flake .#ubuntu -b backup
+```
+
+2 回目以降は home-manager が PATH に入るので:
+
+```bash
+home-manager switch --flake ~/.nix-config#ubuntu
+```
+
+### 4. ログインシェルを zsh にする
+
+```bash
+command -v zsh | sudo tee -a /etc/shells
+chsh -s "$(command -v zsh)"
+```
+
+### 5. dotfiles をリンクする
+
+```bash
+cd ~/dotfiles
+./install.sh
+```
+
+### 6. 動作確認
+
+```bash
+which eza uv yazi node
+git config user.email
+```
+
+### 補足
+
+- ユーザー名 `shuya` / ホームディレクトリ `/home/shuya` を前提にしている (`home-linux/hosts/default.nix`)
+- Docker daemon は apt 側で入れる (nix は docker-client / docker-compose のみ)
