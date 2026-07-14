@@ -100,5 +100,10 @@
       inherit darwinConfigurations;
       # ubuntu の standalone home-manager 構成。
       inherit homeConfigurations;
+      # `nix fmt` 用フォーマッタ (treefmt + nixfmt)。
+      formatter = {
+        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;
+        aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixfmt-tree;
+      };
     };
 }
