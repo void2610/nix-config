@@ -3,8 +3,8 @@
   hosts = {
     ubuntu = {
       system = "aarch64-linux";
-      username = "shuya";
-      homeDirectory = "/home/shuya";
+      username = "shuya-izumi";
+      homeDirectory = "/home/shuya-izumi";
       profile = "ubuntu";
       extraModules = [ ];
     };
