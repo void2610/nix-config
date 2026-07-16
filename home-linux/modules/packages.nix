@@ -44,6 +44,7 @@ in
     go-task
     imagemagick
     lazygit
+    lua51Packages.luarocks
     mermaid-cli
     neofetch
     neovim
