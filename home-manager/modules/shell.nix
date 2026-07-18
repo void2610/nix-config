@@ -10,6 +10,8 @@ in
     "/opt/homebrew/sbin"
     "${homeDir}/Documents"
     "${homeDir}/.yarn/bin"
+    # tailscale-app(Cask)同梱の CLI を PATH に通す。formula を入れると GUI 版 daemon と衝突するため app の MacOS バイナリを使う。
+    "/Applications/Tailscale.app/Contents/MacOS"
   ];
 
   home.sessionVariables = {
