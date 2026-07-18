@@ -9,7 +9,6 @@ in
       { app = "/Applications/Discord.app"; }
       { app = "/Applications/Arc.app"; }
       { app = "/Applications/Spotify.app"; }
-      { app = "/System/Applications/Music.app"; }
       { app = "/Applications/GitHub Desktop.app"; }
       { app = "/Applications/Rider.app"; }
       { app = "/System/Applications/System Settings.app"; }
