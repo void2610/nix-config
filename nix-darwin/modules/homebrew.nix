@@ -101,7 +101,8 @@ let
   # 末尾の selector がここから profile に対応する 1 エントリを引く。
   profiles = {
     game = {
-      brews = [ ];
+      # Unity YAML のセマンティック diff CLI (lazygit の externalDiffCommand から使用)
+      brews = [ "hashiiiii/tap/prefablens" ];
       casks = desktopCasks ++ [
         "affinity"
         "discord"
@@ -115,7 +116,10 @@ let
         "unity-hub"
       ];
       masApps = desktopMasApps;
-      taps = [ "sikarugir-app/sikarugir" ];
+      taps = [
+        "hashiiiii/tap"
+        "sikarugir-app/sikarugir"
+      ];
     };
 
     work = {
