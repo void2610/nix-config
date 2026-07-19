@@ -48,7 +48,7 @@ in
     shellAliases = {
       ur = "uv run python";
       v = "nvim";
-      vi = "nvim";
+      z = "zellij";
       sftp = "sftp -P 25288 shuya@nitfccuda.mydns.jp";
       ls = "eza --icons --group-directories-first";
       ll = "eza -la --icons --group-directories-first";

@@ -20,6 +20,7 @@ let
     "terminal-notifier"
     "uv"
     "yazi"
+    "zellij"
     "zlib"
     "zoxide"
   ];
