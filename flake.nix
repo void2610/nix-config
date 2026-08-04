@@ -17,15 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nix-homebrew: Homebrew の宣言的管理
-    # brew-src は 5.1.14 に固定する。5.1.1 では cask_struct_generator.rb の
-    # process_depends_on に `macos: {}` の空 hash を弾くガードが無く、
-    # `dep_type.to_sym` が nil で `undefined method 'to_sym' for nil` を発生させる。
-    # 5.1.14 で `next [key, :any] unless dep_type` のガードが入って解消する。
+    # brew-src は 6.0.15 以上必須: cask が Homebrew 6 系 DSL (command_wrapper 等) を使うため 5.1 系では bundle が失敗する
     nix-homebrew = {
       url = "github:zhaofengli/nix-homebrew";
       inputs.brew-src = {
-        url = "github:Homebrew/brew/5.1.14";
+        url = "github:Homebrew/brew/6.0.15";
         flake = false;
       };
     };
