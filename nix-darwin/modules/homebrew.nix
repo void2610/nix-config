@@ -31,6 +31,7 @@ let
     "claude-code@latest"
     "codex"
     "font-jetbrains-mono-nerd-font"
+    "font-plemol-jp-nf"
     "ghostty"
     "karabiner-elements"
     "linearmouse"
