@@ -9,6 +9,9 @@ let
   claudeRemoteLogDir = "${homeDir}/.claude/remote-logs";
   claudeRemoteListenerDir = "${homeDir}/Documents/GitHub/claude-remote-listener";
   colimaLogDir = "${homeDir}/.colima/logs";
+  # ~/Documents は TCC で保護され launchd から読めないため、homelab は srv 配下に置く
+  immichBackupDir = "${homeDir}/srv/homelab/immich/backup";
+  immichBackupLogDir = "${homeDir}/.local/state/immich-backup";
 in
 {
   # リモート起動スクリプトの launchd ログ出力先を先に作る。
@@ -67,6 +70,36 @@ in
         HOME = homeDir;
         # launchd は zsh の PATH を継承せず、colima は limactl 等を PATH から解決する。
         PATH = "${pkgs.colima}/bin:/etc/profiles/per-user/${config.home.username}/bin:/usr/bin:/bin:/usr/sbin:/sbin:/run/current-system/sw/bin";
+      };
+    };
+  };
+
+  home.activation.immichBackupLogDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p ${immichBackupLogDir}
+  '';
+
+  # Immich の写真と DB ダンプを R2 へ退避する。認証情報は backup.env にあり nix では管理しない。
+  launchd.agents.immich-backup = {
+    enable = true;
+    config = {
+      Label = "dev.void2610.immich-backup";
+      ProgramArguments = [ "${immichBackupDir}/immich-backup.sh" ];
+      # Unity ビルドと GitHub Actions のジョブを避けて深夜に回す。
+      StartCalendarInterval = [
+        {
+          Hour = 3;
+          Minute = 0;
+        }
+      ];
+      # スリープ等で 3:00 を跨いだ場合に復帰後の実行を促す。
+      RunAtLoad = false;
+      WorkingDirectory = immichBackupDir;
+      StandardOutPath = "${immichBackupLogDir}/stdout.log";
+      StandardErrorPath = "${immichBackupLogDir}/stderr.log";
+      EnvironmentVariables = {
+        HOME = homeDir;
+        # restic・docker・gzip を launchd の最小 PATH から解決できるようにする。
+        PATH = "/etc/profiles/per-user/${config.home.username}/bin:/usr/bin:/bin:/usr/sbin:/sbin:/run/current-system/sw/bin";
       };
     };
   };
