@@ -59,6 +59,7 @@ in
     neovim
     nodejs_22
     qemu
+    restic
     uloopCli
     sops
     tree-sitter
