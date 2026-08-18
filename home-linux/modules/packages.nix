@@ -37,8 +37,6 @@ in
     cmake
     delta
     fd
-    gh
-    gh-dash
     ghostscript
     ghq
     go-task

@@ -8,6 +8,7 @@
   imports = [
     ../modules/packages.nix
     ../modules/git.nix
+    ../modules/gh.nix
     ../modules/shell.nix
     ../modules/tmux.nix
   ];

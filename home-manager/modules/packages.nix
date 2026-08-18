@@ -45,8 +45,6 @@ in
     docker-client
     docker-compose
     fd
-    gh
-    gh-dash
     ghostscript
     ghq
     go-task
