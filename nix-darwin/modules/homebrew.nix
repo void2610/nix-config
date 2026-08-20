@@ -79,6 +79,9 @@ let
     "lcov"
     "tracy"
     "apache-arrow"
+    # Taskfile の `task pylint` が呼ぶ Python 静的解析。CI と同じ検査をローカルで再現するために必要
+    "pyright"
+    "ruff"
   ];
 
   # Docker daemon のローカル環境。
