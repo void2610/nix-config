@@ -1,4 +1,4 @@
-{ profile, ... }:
+{ profile, config, ... }:
 let
   commonBrews = [
     # macOS には GNU coreutils の timeout が無いため、単体実装を入れる
@@ -187,4 +187,10 @@ in
     masApps = selected.masApps;
     taps = commonTaps ++ selected.taps;
   };
+
+  # Homebrew は非公式 tap の formula 読み込みに trust 登録を要求するため、
+  # 手続き的な `brew trust` に頼らず宣言した taps から trust.json を生成する。
+  home-manager.users.${config.system.primaryUser}.home.file.".homebrew/trust.json".text =
+    builtins.toJSON
+      { trustedtaps = map (tap: tap.name) config.homebrew.taps; };
 }
