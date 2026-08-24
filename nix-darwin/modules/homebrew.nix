@@ -1,6 +1,8 @@
 { profile, ... }:
 let
   commonBrews = [
+    # macOS には GNU coreutils の timeout が無いため、単体実装を入れる
+    "aisk/tap/timeout"
     "bat"
     "eza"
     "ninja"
@@ -23,6 +25,10 @@ let
     "zellij"
     "zlib"
     "zoxide"
+  ];
+
+  commonTaps = [
+    "aisk/tap"
   ];
 
   commonCasks = [
@@ -179,6 +185,6 @@ in
     brews = commonBrews ++ selected.brews;
     casks = selected.casks;
     masApps = selected.masApps;
-    taps = selected.taps;
+    taps = commonTaps ++ selected.taps;
   };
 }
