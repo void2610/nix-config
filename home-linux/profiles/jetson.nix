@@ -21,6 +21,7 @@
       jq
       just
       xclip
+      pet
     ]
   );
 
