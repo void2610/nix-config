@@ -10,7 +10,10 @@
     ../modules/git.nix
     ../modules/gh.nix
     ../modules/shell.nix
-    ../modules/tmux.nix
+    (import ../../modules/tmux.nix {
+      shell = "/bin/zsh";
+      copyCommand = "pbcopy";
+    })
   ];
 
   home.username = username;
