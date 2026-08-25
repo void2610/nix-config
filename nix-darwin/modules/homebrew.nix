@@ -1,4 +1,4 @@
-{ profile, config, ... }:
+{ profile, config, pkgs, ... }:
 let
   commonBrews = [
     # macOS には GNU coreutils の timeout が無いため、単体実装を入れる
@@ -189,9 +189,17 @@ in
     taps = commonTaps ++ selected.taps;
   };
 
-  # Homebrew は非公式 tap の formula 読み込みに trust 登録を要求するため、
-  # 手続き的な `brew trust` に頼らず宣言した taps から trust.json を生成する。
-  home-manager.users.${config.system.primaryUser}.home.file.".homebrew/trust.json".text =
-    builtins.toJSON
-      { trustedtaps = map (tap: tap.name) config.homebrew.taps; };
+  # 非公式 tap の trust 登録を宣言管理する。Homebrew が trust.json を書き戻す際に nix store へのリンクを拒否するため、リンクでなく実ファイルとしてコピー配置する。
+  home-manager.users.${config.system.primaryUser} =
+    { lib, ... }:
+    let
+      trustJson = pkgs.writeText "trust.json" (
+        builtins.toJSON { trustedtaps = map (tap: tap.name) config.homebrew.taps; }
+      );
+    in
+    {
+      home.activation.homebrewTrustStore = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run install -Dm600 ${trustJson} "$HOME/.homebrew/trust.json"
+      '';
+    };
 }
