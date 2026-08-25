@@ -145,6 +145,7 @@ let
         "firefox"
         "google-chrome"
         "session-manager-plugin"
+        "tigervnc"
         "zoom"
       ];
       masApps = desktopMasApps;
