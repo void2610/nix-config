@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   # runner 実行ユーザーを 1 箇所に寄せて、state ディレクトリの所有権と設定を揃えやすくする。
   # launchd 設定と activation script で値がずれると復旧時の原因追跡が難しくなるため共通化する。
@@ -153,7 +153,8 @@ in
 
   # runner の state/log/work を起動前に揃えて、複数 runner でも初回起動失敗を避ける。
   # 同一マシンで warm workspace を残し続ける前提なので、activation 時に全 runner 分を先に整備する。
-  system.activationScripts.githubRunnerPermissions.text = ''
+  # nix-darwin は固定名の activation script しか実行しないため、独自名 (githubRunnerPermissions) ではなく extraActivation に載せる。
+  system.activationScripts.extraActivation.text = lib.mkAfter ''
     # 常設 runner の state とログを先に作って、起動時の初回失敗を避ける。
     # launchd 起動より前に配置しておかないと、未作成ディレクトリで EX_CONFIG になりやすいため整備する。
     ${mkdirCommands}
