@@ -56,7 +56,6 @@ let
     "tailscale-app"
     "the-unarchiver"
     "visual-studio-code"
-    "warp"
     "zed"
   ];
 
