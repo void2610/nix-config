@@ -10,6 +10,7 @@
     ../modules/git.nix
     ../modules/gh.nix
     ../modules/shell.nix
+    ../modules/open-in-neovim.nix
     (import ../../modules/tmux.nix {
       shell = "/bin/zsh";
       copyCommand = "pbcopy";
