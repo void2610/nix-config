@@ -4,6 +4,7 @@ let
     # macOS には GNU coreutils の timeout が無いため、単体実装を入れる
     "aisk/tap/timeout"
     "bat"
+    "biome"
     "eza"
     "ninja"
     "ffmpeg"
