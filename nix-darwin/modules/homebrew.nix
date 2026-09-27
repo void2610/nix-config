@@ -1,4 +1,9 @@
-{ profile, config, pkgs, ... }:
+{
+  profile,
+  config,
+  pkgs,
+  ...
+}:
 let
   commonBrews = [
     # macOS には GNU coreutils の timeout が無いため、単体実装を入れる

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # runner 実行ユーザーを 1 箇所に寄せて、state ディレクトリの所有権と設定を揃えやすくする。
   # launchd 設定と activation script で値がずれると復旧時の原因追跡が難しくなるため共通化する。
