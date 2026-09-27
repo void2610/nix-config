@@ -18,6 +18,7 @@ let
     "pet"
     "pnpm"
     "poetry"
+    "rclone"
     "ripgrep"
     "rust"
     "terminal-notifier"
