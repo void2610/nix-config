@@ -54,12 +54,15 @@ let
     "alt-tab"
     "appcleaner"
     "arc"
+    "blender"
     "displaylink"
     "github"
+    "google-chrome"
     "hiddenbar"
     "keycastr"
     "raycast"
     "spotify"
+    "surge-xt"
     "tailscale-app"
     "the-unarchiver"
     "visual-studio-code"
@@ -145,11 +148,9 @@ let
     work = {
       brews = melchiorBrews ++ dockerBrews ++ workOnlyBrews;
       casks = desktopCasks ++ [
-        "blender"
         "cloudcompare"
         "freecad"
         "firefox"
-        "google-chrome"
         "session-manager-plugin"
         "tigervnc"
         "zoom"
