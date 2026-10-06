@@ -30,15 +30,19 @@ let
       ++ cfg.extraModules;
     };
 
-  # 1 ホストを systems の数だけ `<name>-<system>` 形式の出力に展開する。
+  # `systems` を持つホストは arch ごとに `<name>-<system>` 形式へ展開し、
+  # 単一 `system` のホスト (jetson 等) は既存の target 名を壊さないよう `<name>` のまま出力する。
   expandHost =
     configName: cfg:
-    builtins.listToAttrs (
-      map (system: {
-        name = "${configName}-${system}";
-        value = mkHomeConfiguration cfg system;
-      }) cfg.systems
-    );
+    if cfg ? systems then
+      builtins.listToAttrs (
+        map (system: {
+          name = "${configName}-${system}";
+          value = mkHomeConfiguration cfg system;
+        }) cfg.systems
+      )
+    else
+      { ${configName} = mkHomeConfiguration cfg cfg.system; };
 in
 # hosts/default.nix に定義した全ホスト × 全 arch から flake の出力を自動生成する。
 builtins.foldl' (acc: configName: acc // expandHost configName hostDefs.hosts.${configName}) { } (

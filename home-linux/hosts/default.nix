@@ -1,4 +1,4 @@
-# Linux ホストの定義。差分（systems・ユーザー名・profile・追加モジュール）のみを記述する。
+# Linux ホストの定義。差分（systems または system・ユーザー名・profile・追加モジュール）のみを記述する。
 {
   hosts = {
     # systems に列挙した各 arch から `ubuntu-<system>` 形式の flake 出力が生成される。
