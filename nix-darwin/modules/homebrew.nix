@@ -1,7 +1,15 @@
-{ profile, ... }:
+{
+  profile,
+  config,
+  pkgs,
+  ...
+}:
 let
   commonBrews = [
+    # macOS には GNU coreutils の timeout が無いため、単体実装を入れる
+    "aisk/tap/timeout"
     "bat"
+    "biome"
     "eza"
     "ninja"
     "ffmpeg"
@@ -15,6 +23,7 @@ let
     "pet"
     "pnpm"
     "poetry"
+    "rclone"
     "ripgrep"
     "rust"
     "terminal-notifier"
@@ -25,12 +34,17 @@ let
     "zoxide"
   ];
 
+  commonTaps = [
+    "aisk/tap"
+  ];
+
   commonCasks = [
     "battery"
     "bitwarden"
     "claude-code@latest"
     "codex"
     "font-jetbrains-mono-nerd-font"
+    "font-plemol-jp-nf"
     "ghostty"
     "karabiner-elements"
     "linearmouse"
@@ -49,7 +63,6 @@ let
     "tailscale-app"
     "the-unarchiver"
     "visual-studio-code"
-    "warp"
     "zed"
   ];
 
@@ -63,7 +76,10 @@ let
     "make"
     "boost"
     "assimp"
-    "opencv"
+    "opencv@4"
+    "vulkan-loader"
+    "vulkan-headers"
+    "molten-vk"
     "glfw"
     "glew"
     "freetype"
@@ -75,6 +91,9 @@ let
     "lcov"
     "tracy"
     "apache-arrow"
+    # Taskfile の `task pylint` が呼ぶ Python 静的解析。CI と同じ検査をローカルで再現するために必要
+    "pyright"
+    "ruff"
   ];
 
   # Docker daemon のローカル環境。
@@ -132,6 +151,7 @@ let
         "firefox"
         "google-chrome"
         "session-manager-plugin"
+        "tigervnc"
         "zoom"
       ];
       masApps = desktopMasApps;
@@ -172,6 +192,20 @@ in
     brews = commonBrews ++ selected.brews;
     casks = selected.casks;
     masApps = selected.masApps;
-    taps = selected.taps;
+    taps = commonTaps ++ selected.taps;
   };
+
+  # 非公式 tap の trust 登録を宣言管理する。Homebrew が trust.json を書き戻す際に nix store へのリンクを拒否するため、リンクでなく実ファイルとしてコピー配置する。
+  home-manager.users.${config.system.primaryUser} =
+    { lib, ... }:
+    let
+      trustJson = pkgs.writeText "trust.json" (
+        builtins.toJSON { trustedtaps = map (tap: tap.name) config.homebrew.taps; }
+      );
+    in
+    {
+      home.activation.homebrewTrustStore = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run install -Dm600 ${trustJson} "$HOME/.homebrew/trust.json"
+      '';
+    };
 }

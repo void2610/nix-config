@@ -9,6 +9,7 @@ Nix + nix-darwin + home-manager による macOS 設定管理リポジトリ。
 |---|---|---|
 | システム | `nix-darwin/` | macOS システム設定・Homebrew |
 | ユーザー | `home-manager/` | CLI パッケージ・シェル・dotfiles |
+| 共通 | `modules/` | darwin / linux 双方から import する home-manager モジュール |
 | 共通 | `pkgs/` | nixpkgs にないカスタムパッケージ |
 | 秘密情報 | `secrets/` | sops-nix で暗号化した SSH 鍵等 |
 

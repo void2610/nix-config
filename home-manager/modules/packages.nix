@@ -45,8 +45,6 @@ in
     docker-client
     docker-compose
     fd
-    gh
-    gh-dash
     ghostscript
     ghq
     go-task
@@ -59,6 +57,7 @@ in
     neovim
     nodejs_22
     qemu
+    restic
     uloopCli
     sops
     tree-sitter
