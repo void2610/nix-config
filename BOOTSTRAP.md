@@ -73,7 +73,7 @@ ls -la ~/.ssh
 - SSH 鍵自体は `secrets/common.yaml` から復元される
 - `secrets/common.yaml` を復号できなくなるので、`~/.config/sops/age/keys.txt` は必ず別保管する
 
-## Ubuntu (aarch64-linux)
+## Ubuntu (x86_64-linux / aarch64-linux)
 
 Ubuntu では standalone home-manager でユーザー環境 (CLI) のみを管理する。sops の age 鍵は不要。
 
@@ -94,15 +94,17 @@ git clone https://github.com/void2610/dotfiles.git ~/dotfiles
 
 ### 3. home-manager を適用する
 
+flake target は `ubuntu-<arch>` 形式 (`ubuntu-x86_64-linux` / `ubuntu-aarch64-linux`)。
+
 ```bash
 cd ~/.nix-config
-nix run home-manager/master -- switch --flake .#ubuntu -b backup
+nix run home-manager/master -- switch --flake .#ubuntu-$(uname -m)-linux -b backup
 ```
 
 2 回目以降は home-manager が PATH に入るので:
 
 ```bash
-home-manager switch --flake ~/.nix-config#ubuntu
+home-manager switch --flake ~/.nix-config#ubuntu-$(uname -m)-linux
 ```
 
 ### 4. ログインシェルを zsh にする
@@ -128,4 +130,4 @@ git config user.email
 
 ### 補足
 
-- ユーザー名 `shuya` / ホームディレクトリ `/home/shuya` を前提にしている (`home-linux/hosts/default.nix`)
+- ユーザー名 `shuya-izumi` / ホームディレクトリ `/home/shuya-izumi` を前提にしている (`home-linux/hosts/default.nix`)
