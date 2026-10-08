@@ -26,6 +26,7 @@ let
     "rclone"
     "ripgrep"
     "rust"
+    "swiftformat"
     "terminal-notifier"
     "uv"
     "yazi"
@@ -138,7 +139,9 @@ let
         "typeless"
         "unity-hub"
       ];
-      masApps = desktopMasApps;
+      masApps = desktopMasApps // {
+        "Xcode" = 497799835;
+      };
       taps = [
         "hashiiiii/tap"
         "sikarugir-app/sikarugir"
