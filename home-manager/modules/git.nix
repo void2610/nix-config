@@ -1,6 +1,8 @@
 {
   programs.git = {
     enable = true;
+    # 本体は Homebrew で入れる (nixpkgs の追従が遅く新機能が使えないため)
+    package = null;
     signing.format = "openpgp";
     ignores = [
       "**/.claude/settings.local.json"

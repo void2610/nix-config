@@ -15,6 +15,7 @@ let
     "ffmpeg"
     "fzf"
     "go"
+    "git"
     "git-lfs"
     "jq"
     "just"
