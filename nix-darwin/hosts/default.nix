@@ -33,6 +33,8 @@ let
         ../modules/github-runner-server.nix
         # runner の Unity は WindowServer が必要なので、コンソールがロック / ログインウィンドウにならないよう固定する。
         ../modules/console-session-server.nix
+        # CI の Unity が Licensing Client を spawn して runner の stdio を掴む事故を防ぐため、ログイン時に先に常駐させる
+        ../modules/unity-licensing-server.nix
       ];
     };
   };
