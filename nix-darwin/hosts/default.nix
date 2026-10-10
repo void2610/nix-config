@@ -31,6 +31,8 @@ let
         ../modules/tailscale.nix
         ../modules/power-server.nix
         ../modules/github-runner-server.nix
+        # runner の Unity は WindowServer が必要なので、コンソールがロック / ログインウィンドウにならないよう固定する。
+        ../modules/console-session-server.nix
       ];
     };
   };

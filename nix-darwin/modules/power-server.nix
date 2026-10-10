@@ -13,5 +13,9 @@
 
     # フタを閉じてもスリープさせない。Amphetamine では Clamshell Sleep を防げなかったため OS 側で固定する。
     /usr/bin/pmset -a disablesleep 1
+
+    # ディスプレイスリープ (既定 10 分) を切る。ディスプレイ消灯を起点にスクリーンロックへ入ると runner の Unity が WindowServer 待ちで止まる。
+    /usr/bin/pmset -a displaysleep 0
+    /usr/bin/pmset -a sleep 0
   '';
 }
