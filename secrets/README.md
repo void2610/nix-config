@@ -47,3 +47,19 @@ server profile では追加で次も使う:
 
 現在の runner 設定は永続運用を前提にしているため、通常の `darwin-rebuild switch` では再登録しない。
 runner 名の変更や GitHub 側で登録を削除したあとに再登録が必要になったときだけ、この token を更新すればよい。
+
+game / server profile では追加で次も使う:
+
+- `apple_development_p12` -> Strix などの署名に使う Apple Development 証明書と秘密鍵 (PKCS#12 を base64 にしたもの)
+- `apple_development_password` -> 上の PKCS#12 と、取り込み先の専用キーチェーン `~/Library/Keychains/apple-development.keychain-db` のパスワード
+
+無料 Apple ID は有効な開発用証明書を 1 枚しか持てず、Mac ごとに Xcode で作ると互いに失効させ合い、失効した証明書で署名したアプリは起動しなくなる。
+そのため 1 枚を sops で配り、`apple-development-signing.nix` がログイン時に専用キーチェーンへ取り込んで解錠する。
+
+証明書が失効・期限切れになって作り直したときは、作った Mac から秘密鍵ごと PKCS#12 で書き出して両方の値を更新し、両方のホストで `darwin-rebuild switch` する。
+
+```bash
+export SOPS_AGE_KEY_FILE=~/.config/sops/age/keys.txt
+printf '"%s"' "$(base64 -i identity.p12 | tr -d '\n')" | sops set --value-stdin secrets/common.yaml '["apple_development_p12"]'
+printf '"%s"' "<PKCS#12 のパスワード>" | sops set --value-stdin secrets/common.yaml '["apple_development_password"]'
+```

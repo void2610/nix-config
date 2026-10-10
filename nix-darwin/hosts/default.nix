@@ -11,6 +11,8 @@ let
         # Unity Hub から起動した Unity Editor が Nix の node 等を見つけられるようにする。
         # GUI アプリは zsh の PATH を継承しないため、launchd レベルで PATH を設定する。
         ../modules/gui-app-path.nix
+        # Strix を server と同じ開発用証明書で署名する
+        ../modules/apple-development-signing.nix
       ];
     };
 
@@ -35,6 +37,8 @@ let
         ../modules/console-session-server.nix
         # CI の Unity が Licensing Client を spawn して runner の stdio を掴む事故を防ぐため、ログイン時に先に常駐させる
         ../modules/unity-licensing-server.nix
+        # Strix を手元の Mac と同じ開発用証明書で署名する
+        ../modules/apple-development-signing.nix
       ];
     };
   };

@@ -9,6 +9,11 @@ let
   homeDir = config.users.users.${username}.home;
   secretsFile = ../../secrets/common.yaml;
   hasSecretsFile = builtins.pathExists secretsFile;
+  # Strix を署名する手元の Mac と server だけに開発用証明書を配る (apple-development-signing.nix)
+  signsApps = builtins.elem profile [
+    "game"
+    "server"
+  ];
 in
 {
   sops = {
@@ -54,6 +59,17 @@ in
         group = "staff";
         # registration token は再登録に使えるため、他ユーザーから読めないよう最小権限に絞る。
         # 誤読取を避けるため 600 固定にする。
+        mode = "600";
+      };
+    }
+    // lib.optionalAttrs signsApps {
+      apple_development_p12 = {
+        owner = username;
+        mode = "600";
+      };
+
+      apple_development_password = {
+        owner = username;
         mode = "600";
       };
     };
