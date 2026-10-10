@@ -41,6 +41,8 @@ let
         ../modules/apple-development-signing.nix
         # 無料 Apple ID の署名は 7 日で切れるため、Strix を毎晩ビルドして iPhone に入れ直す
         ../modules/strix-nightly-install-server.nix
+        # shinkyo の画面を Cloudflare Tunnel で公開する
+        ../modules/cloudflared-server.nix
       ];
     };
   };

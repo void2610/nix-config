@@ -61,6 +61,14 @@ in
         # 誤読取を避けるため 600 固定にする。
         mode = "600";
       };
+
+      # shinkyo の画面を公開する Cloudflare Tunnel の認証情報。トンネルを動かせる鍵なので server にだけ配る
+      cloudflared_shinkyo_credentials = {
+        # cloudflared はログイン中のユーザーの LaunchAgent で動くので、そのユーザーが読めるようにする
+        owner = username;
+        # 漏れるとトンネルを乗っ取られるため、他ユーザーから読めないようにする
+        mode = "600";
+      };
     }
     // lib.optionalAttrs signsApps {
       apple_development_p12 = {
