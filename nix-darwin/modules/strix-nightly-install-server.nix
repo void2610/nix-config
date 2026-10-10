@@ -29,6 +29,22 @@ let
       exit 1
     fi
 
+    # Xcode は期限内のプロファイルを使い回し、入れ直しても 7 日の期限は延びないため、期限まで 2 日を切ったら消して作り直させる
+    limit=$(($(date +%s) + 2 * 86400))
+    for profile in "$HOME/Library/Developer/Xcode/UserData/Provisioning Profiles"/*.mobileprovision; do
+      [ -e "$profile" ] || continue
+      plist=$(openssl smime -inform der -verify -noverify -in "$profile" 2>/dev/null) || continue
+      case "$(plutil -extract Entitlements.application-identifier raw -o - - <<<"$plist" 2>/dev/null)" in
+        *.void2610.Strix | *.void2610.Strix.*) ;;
+        *) continue ;;
+      esac
+      expires=$(plutil -extract ExpirationDate raw -o - - <<<"$plist")
+      if [ "$(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$expires" +%s)" -lt "$limit" ]; then
+        echo "$(date '+%F %T') 期限の近いプロファイルを削除: ''${profile##*/} ($expires)"
+        rm -f "$profile"
+      fi
+    done
+
     echo "$(date '+%F %T') ビルド開始: $(git log --oneline -1)"
     # 有効な証明書が無いと -allowProvisioningUpdates が新しく作り、共有中の証明書を失効させて手元の Mac で入れたアプリが起動しなくなる (apple-development-signing.nix)
     if ! xcodebuild -project Strix.xcodeproj -scheme Strix \
@@ -45,7 +61,8 @@ let
     fi
 
     if xcrun devicectl device install app --device "$DEVICE" "$APP"; then
-      echo "$(date '+%F %T') インストール成功: $APP"
+      expires=$(openssl smime -inform der -verify -noverify -in "$APP/embedded.mobileprovision" 2>/dev/null | plutil -extract ExpirationDate raw -o - - 2>/dev/null)
+      echo "$(date '+%F %T') インストール成功: $APP (プロファイルの期限 $expires)"
       touch "$FLAG"
       # 数日以上前の成功フラグは掃除する。
       find /tmp -maxdepth 1 -name 'strix-nightly-install.success-*' -mtime +3 -delete 2>/dev/null
