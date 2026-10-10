@@ -14,8 +14,13 @@ let
   # `path` 値のまま埋め込むと flake 評価時に余計な path context が残りやすく、
   # `darwin-rebuild` 中に外部パス解決へ巻き込まれるのを避けたい。
   nixpkgsPath = builtins.toString pkgs.path;
+
+  # RealSense カメラを macOS から扱うため、Linux 専用依存を外した版を使う。
+  librealsense = import ../../pkgs/librealsense.nix { inherit pkgs; };
 in
 {
+  home.packages = [ librealsense ];
+
   programs.zsh.initContent = ''
     # Melchior 用 shell は work profile からだけ入れる。
     # 共有 repo に flake を置かず、個人用の依存と shellHook を外側から注入するため。

@@ -2,8 +2,6 @@
 let
   claudeCodeUi = import ../../pkgs/claude-code-ui.nix { inherit pkgs; };
   uloopCli = import ../../pkgs/uloop-cli.nix { inherit pkgs; };
-  # RealSense カメラを macOS から扱うため、Linux 専用依存を外した版を使う。
-  librealsense = import ../../pkgs/librealsense.nix { inherit pkgs; };
 
   neofetch = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "neofetch";
@@ -52,7 +50,6 @@ in
     go-task
     imagemagick
     lazygit
-    librealsense
     macism
     neofetch
     mermaid-cli
