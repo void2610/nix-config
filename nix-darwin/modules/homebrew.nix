@@ -166,7 +166,8 @@ let
     # server は GUI 版 Tailscale ではなく nix-darwin 管理の tailscaled に切り替える。
     # sandbox 制約で Tailscale SSH を受けられないため、cask から外して競合も避ける。
     server = {
-      brews = [ ];
+      # shinkyo の画面を Cloudflare Tunnel で公開する
+      brews = [ "cloudflared" ];
       casks = commonCasks ++ [
         "element"
         "unity-hub"
