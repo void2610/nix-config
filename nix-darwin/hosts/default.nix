@@ -39,6 +39,8 @@ let
         ../modules/unity-licensing-server.nix
         # Strix を手元の Mac と同じ開発用証明書で署名する
         ../modules/apple-development-signing.nix
+        # 無料 Apple ID の署名は 7 日で切れるため、Strix を毎晩ビルドして iPhone に入れ直す
+        ../modules/strix-nightly-install-server.nix
       ];
     };
   };
