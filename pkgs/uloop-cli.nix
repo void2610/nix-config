@@ -1,50 +1,57 @@
 { pkgs }:
-pkgs.stdenv.mkDerivation rec {
-  # npm 配布物の実体名を固定する。
-  # ラッパー生成先や Home Manager 側の参照と一致させ、名前ずれで更新時に壊れないようにする。
-  pname = "uloop-cli";
-  # Unity CLI Loop の新機能と既存バグ修正を取り込むため、npm の最新公開版を明示的に固定する。
-  version = "2.1.8";
+let
+  # V3 パッケージの Unity プロジェクトは V2 の npm CLI では tools.json を読めず起動に失敗するため、V3 のネイティブ dispatcher を固定する。
+  version = "3.8.2";
 
-  # npm レジストリの tarball を直接取得する。
-  # lockfile を持たない単体パッケージなので、URL とハッシュを Nix 側で固定して再現性を保つ。
+  # 配布物がアーキテクチャ別のため、どのホストでも同じ derivation で入るよう両方の公式 .sha256 を並べる。
+  assets = {
+    aarch64-darwin = {
+      name = "uloop-dispatcher-darwin-arm64.tar.gz";
+      sha256 = "a790ebe8109cf00ef8ab19732dd8388f03e9d81ffb8fd575c0e38a4886e4b899";
+    };
+    x86_64-darwin = {
+      name = "uloop-dispatcher-darwin-amd64.tar.gz";
+      sha256 = "83accc927e63bdc53c9f6c8318bfc392930e368bfca9c88ddff4fadcd444fec8";
+    };
+  };
+  asset = assets.${pkgs.stdenv.hostPlatform.system}
+    or (throw "uloop: ${pkgs.stdenv.hostPlatform.system} 向けの dispatcher は未定義");
+in
+pkgs.stdenvNoCC.mkDerivation {
+  # Home Manager 側の参照名 (uloopCli) と揃えるため pname は従来のまま据え置く。
+  pname = "uloop-cli";
+  inherit version;
+
+  # GitHub Release のタグ dispatcher-v<version> に置かれた公式バイナリを取得し、ハッシュで再現性を固定する。
   src = pkgs.fetchurl {
-    url = "https://registry.npmjs.org/uloop-cli/-/uloop-cli-${version}.tgz";
-    hash = "sha512-e/VrvZXoMhM6wOvvEqb9bj3j3pMk3JH+0V6aNoX0u/Pl/8E9I0Rs6eQvGM8sP8O46PyU7UZpLfVVrI97/RfgHA==";
+    url = "https://github.com/hatayama/unity-cli-loop/releases/download/dispatcher-v${version}/${asset.name}";
+    inherit (asset) sha256;
   };
 
-  # Node 実行用の薄いラッパーだけを作る構成なので、ビルド時依存は makeWrapper に絞る。
-  # 余計な依存を増やさず、壊れる要因を最小限にするため nativeBuildInputs を明示する。
-  nativeBuildInputs = with pkgs; [
-    makeWrapper
-  ];
+  # アーカイブ直下に uloop バイナリが 1 つだけ入る形式なので、展開先をそのまま作業ディレクトリにする。
+  sourceRoot = ".";
 
-  # 取得した tarball をそのまま配置して使うため、通常のビルド工程は不要にする。
-  # npm パッケージの内容を変換せず扱い、更新時の差分を読みやすく保つために無効化している。
+  # 配布済みバイナリを置くだけなのでビルド工程は不要。
+  dontConfigure = true;
   dontBuild = true;
 
-  # パッケージ本体を Node モジュール配置にコピーし、CLI エントリポイントへラッパーを張る。
-  # npm インストーラに依存せず Nix ストア内だけで完結させ、実行環境を安定させるための手順。
+  # Apple Silicon では署名済みバイナリを strip すると署名が壊れて起動時に kill されるため、fixup を丸ごと止める。
+  dontStrip = true;
+  dontFixup = true;
+
+  # dispatcher 本体だけを bin に配置する。プロジェクトごとの runner は実行時に dispatcher がユーザーキャッシュへ取得する。
   installPhase = ''
     runHook preInstall
-
-    mkdir -p $out/lib/node_modules/uloop-cli
-    cp -r . $out/lib/node_modules/uloop-cli
-
-    mkdir -p $out/bin
-    makeWrapper ${pkgs.nodejs_22}/bin/node $out/bin/uloop \
-      --add-flags "$out/lib/node_modules/uloop-cli/dist/cli.bundle.cjs"
-
+    install -Dm755 uloop $out/bin/uloop
     runHook postInstall
   '';
 
-  # Darwin ホスト向けの社内利用 CLI としてメタデータを付ける。
-  # 対応プラットフォームや既定コマンド名を明示し、Home Manager から扱いやすくするための定義。
+  # Darwin ホスト向けの CLI としてメタデータを付け、Home Manager から扱いやすくする。
   meta = with pkgs.lib; {
-    description = "CLI tool for Unity Editor communication via Unity CLI Loop";
-    homepage = "https://github.com/hatayama/uLoopMCP#readme";
+    description = "Native dispatcher CLI for Unity CLI Loop (uLoopMCP V3)";
+    homepage = "https://github.com/hatayama/unity-cli-loop";
     license = licenses.mit;
     mainProgram = "uloop";
-    platforms = platforms.darwin;
+    platforms = builtins.attrNames assets;
   };
 }
