@@ -23,7 +23,6 @@ let
     "openssl@3"
     "pet"
     "pnpm"
-    "poetry"
     "rclone"
     "ripgrep"
     "rust"
@@ -58,7 +57,6 @@ let
     "arc"
     "blender"
     "displaylink"
-    "github"
     "google-chrome"
     "hiddenbar"
     "keycastr"
@@ -132,7 +130,6 @@ let
         "affinity"
         "discord"
         "obs"
-        "rider"
         "sf-symbols"
         # Windows 版 Steam ゲーム用 Wine ラッパー (Wineskin/Kegworks 後継)。要 Rosetta 2。
         "sikarugir-app/sikarugir/sikarugir"
@@ -154,6 +151,7 @@ let
       casks = desktopCasks ++ [
         "cloudcompare"
         "freecad"
+        "github"
         "firefox"
         "session-manager-plugin"
         "tigervnc"
