@@ -151,7 +151,6 @@ let
       casks = desktopCasks ++ [
         "cloudcompare"
         "freecad"
-        "github"
         "firefox"
         "session-manager-plugin"
         "tigervnc"
