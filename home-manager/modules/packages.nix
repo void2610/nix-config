@@ -36,7 +36,8 @@ in
   home.packages = with pkgs; [
     age
     alcove
-    clang-tools
+    # melchior の CI (clang-format-22) と整形の判定をそろえる
+    llvmPackages_22.clang-tools
     cmake
     colima
     dotnet-sdk
