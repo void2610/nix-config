@@ -31,6 +31,7 @@ let
     "uv"
     "yazi"
     "zellij"
+    "zig"
     "zlib"
     "zoxide"
   ];
@@ -42,10 +43,12 @@ let
   commonCasks = [
     "battery"
     "bitwarden"
+    "blender"
     "claude-code@latest"
     "codex"
     "font-jetbrains-mono-nerd-font"
     "font-plemol-jp-nf"
+    "google-chrome"
     "ghostty"
     "karabiner-elements"
     "linearmouse"
@@ -55,18 +58,14 @@ let
     "alt-tab"
     "appcleaner"
     "arc"
-    "blender"
     "displaylink"
-    "google-chrome"
     "hiddenbar"
     "keycastr"
     "raycast"
     "spotify"
-    "surge-xt"
     "tailscale-app"
     "the-unarchiver"
     "visual-studio-code"
-    "zed"
   ];
 
   # Melchior 関連プロジェクトの依存
@@ -131,7 +130,7 @@ let
         "discord"
         "obs"
         "sf-symbols"
-        # Windows 版 Steam ゲーム用 Wine ラッパー (Wineskin/Kegworks 後継)。要 Rosetta 2。
+        "surge-xt"
         "sikarugir-app/sikarugir/sikarugir"
         "steam"
         "typeless"
@@ -149,12 +148,9 @@ let
     work = {
       brews = melchiorBrews ++ dockerBrews ++ workOnlyBrews;
       casks = desktopCasks ++ [
-        "cloudcompare"
         "freecad"
-        "firefox"
         "session-manager-plugin"
         "tigervnc"
-        "zoom"
       ];
       masApps = desktopMasApps;
       taps = [ ];
