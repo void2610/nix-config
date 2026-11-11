@@ -2,6 +2,8 @@
 let
   claudeCodeUi = import ../../pkgs/claude-code-ui.nix { inherit pkgs; };
   uloopCli = import ../../pkgs/uloop-cli.nix { inherit pkgs; };
+  # `clip <パス>` でテキスト・画像は中身を、それ以外はファイルそのものをクリップボードへ載せる自作コマンド。
+  clip = import ../../pkgs/clip { inherit pkgs; };
 
   neofetch = pkgs.stdenvNoCC.mkDerivation rec {
     pname = "neofetch";
@@ -42,6 +44,7 @@ in
     colima
     dotnet-sdk
     claudeCodeUi
+    clip
     delta
     docker-client
     docker-compose
