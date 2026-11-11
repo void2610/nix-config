@@ -14,8 +14,9 @@ let
       sha256 = "83accc927e63bdc53c9f6c8318bfc392930e368bfca9c88ddff4fadcd444fec8";
     };
   };
-  asset = assets.${pkgs.stdenv.hostPlatform.system}
-    or (throw "uloop: ${pkgs.stdenv.hostPlatform.system} 向けの dispatcher は未定義");
+  asset =
+    assets.${pkgs.stdenv.hostPlatform.system}
+      or (throw "uloop: ${pkgs.stdenv.hostPlatform.system} 向けの dispatcher は未定義");
 in
 pkgs.stdenvNoCC.mkDerivation {
   # Home Manager 側の参照名 (uloopCli) と揃えるため pname は従来のまま据え置く。
