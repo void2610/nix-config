@@ -155,6 +155,18 @@ in
   # 手動インストールに戻すと再構築時の再現性が落ちるため、nix-darwin の service で複数 runner をまとめて管理する。
   services.github-runners = runners;
 
+  # nix-darwin は runner を Interactive で登録するため、並列の Unity ジョブが SSH や Tailscale の CPU 時間まで奪う。
+  launchd.daemons = builtins.listToAttrs (
+    map (name: {
+      name = "github-runner-${name}";
+      value.serviceConfig = {
+        ProcessType = lib.mkForce "Standard";
+        # Background だと E コアに押し込まれ CI が遅くなるので、コアは制限せず nice で譲らせる。
+        Nice = 10;
+      };
+    }) runnerNames
+  );
+
   # runner の state/log/work を起動前に揃えて、複数 runner でも初回起動失敗を避ける。
   # 同一マシンで warm workspace を残し続ける前提なので、activation 時に全 runner 分を先に整備する。
   # nix-darwin は固定名の activation script しか実行しないため、独自名 (githubRunnerPermissions) ではなく extraActivation に載せる。
