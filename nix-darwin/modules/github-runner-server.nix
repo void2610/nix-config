@@ -135,9 +135,13 @@ let
   # すべての runner 用 state/log/work をまとめて所有権補正するコマンド列を生成する。
   # runner 追加時に chown 対象を手書きし続けると抜け漏れが起きやすいため一覧化する。
   chownTargets = builtins.concatStringsSep " " (
+    map (paths: paths.root) runnerPathList ++ map (paths: paths.logDir) runnerPathList
+  );
+  # work 配下は Unity の Library で数百万ファイルあり再帰 chown が CI 負荷下で終わらないため、root の mkdir で作られる階層だけ直す。
+  workChownTargets = builtins.concatStringsSep " " (
     [ "/Users/${runnerUser}/ActionsRunner" ]
-    ++ map (paths: paths.root) runnerPathList
-    ++ map (paths: paths.logDir) runnerPathList
+    ++ map (paths: dirOf paths.workDir) runnerPathList
+    ++ map (paths: paths.workDir) runnerPathList
   );
   # すべての runner 用 state ディレクトリに秘密情報向けの権限を適用するコマンド列を生成する。
   # 登録情報を含む state は runner が増えても同じ厳しさで閉じたいので、paths から導出する。
@@ -177,6 +181,7 @@ in
     # 過去世代の _github-runner 所有ファイルを常用ユーザーへ寄せて、既存登録状態を再利用できるようにする。
     # .credentials_rsaparams が 600 のままだと今の service user から読めず offline のままになるため再帰的に補正する。
     /usr/sbin/chown -R ${runnerUser}:${runnerGroup} ${chownTargets}
+    /usr/sbin/chown ${runnerUser}:${runnerGroup} ${workChownTargets}
     # runner の秘密情報を含む state 配下は他ユーザーに開かない。
     # 認証素材が入るためディレクトリ権限を最小限に寄せておく。
     ${chmodRootCommands}
