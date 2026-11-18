@@ -4,13 +4,11 @@ let
 in
 {
   system.defaults.dock = {
+    # 存在しないアプリを並べると Dock に「?」アイコンが残るため、入っているアプリだけを置く。
     persistent-apps = [
-      { app = "/Applications/Zed.app"; }
       { app = "/Applications/Discord.app"; }
       { app = "/Applications/Arc.app"; }
       { app = "/Applications/Spotify.app"; }
-      { app = "/Applications/GitHub Desktop.app"; }
-      { app = "/Applications/Rider.app"; }
       { app = "/System/Applications/System Settings.app"; }
       { app = "/Applications/Ghostty.app"; }
     ];
