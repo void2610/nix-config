@@ -82,6 +82,9 @@ in
 
       # yazi launcher。実装は y.zsh に分離。
       source ${./y.zsh}
+
+      # プロジェクトで有効にした channel プラグインを claude 起動時に --channels で渡す。実装は claude-channels.zsh に分離。
+      source ${./claude-channels.zsh}
     '';
   };
 }
