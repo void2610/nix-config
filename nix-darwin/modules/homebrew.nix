@@ -10,6 +10,8 @@ let
     "aisk/tap/timeout"
     "bat"
     "biome"
+    # Claude Code の channel プラグイン (Discord 等) の MCP サーバーが Bun で動くため
+    "bun"
     "eza"
     "ninja"
     "ffmpeg"
