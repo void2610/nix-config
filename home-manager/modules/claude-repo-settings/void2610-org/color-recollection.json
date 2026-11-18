@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "discord@claude-plugins-official": true
+  },
+  "permissions": {
+    "deny": [
+      "mcp__plugin_discord_discord__reply",
+      "mcp__plugin_discord_discord__react",
+      "mcp__plugin_discord_discord__edit_message",
+      "mcp__plugin_discord_discord__create_thread"
+    ]
+  }
+}

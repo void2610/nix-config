@@ -83,8 +83,9 @@ in
       # yazi launcher。実装は y.zsh に分離。
       source ${./y.zsh}
 
-      # リポジトリごとに決めた channel プラグインを claude 起動時に有効にして --channels で渡す。実装は claude-channels.zsh に分離。
-      source ${./claude-channels.zsh}
+      # リポジトリ固有の Claude Code 設定を claude 起動時に --settings で渡す。実装は claude-repo-settings.zsh に分離。
+      export CLAUDE_REPO_SETTINGS_DIR=${./claude-repo-settings}
+      source ${./claude-repo-settings.zsh}
     '';
   };
 }
