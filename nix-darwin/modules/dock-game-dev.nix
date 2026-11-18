@@ -7,7 +7,7 @@ in
     # 存在しないアプリを並べると Dock に「?」アイコンが残るため、入っているアプリだけを置く。
     persistent-apps = [
       { app = "/Applications/Discord.app"; }
-      { app = "/Applications/Arc.app"; }
+      { app = "/Applications/yab.app"; }
       { app = "/Applications/Spotify.app"; }
       { app = "/System/Applications/System Settings.app"; }
       { app = "/Applications/Ghostty.app"; }
