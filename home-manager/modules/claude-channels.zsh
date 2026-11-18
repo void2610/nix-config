@@ -1,23 +1,23 @@
-# --channels は設定ファイルに書けず起動フラグでしか渡せないため、プロジェクトの settings.local.json で有効にした channel プラグインをここで渡す
+# --channels は設定ファイルに書けず起動フラグでしか渡せないため、リポジトリごとに channel プラグインの有効化と --channels をここで渡す
+
+# プラグインはユーザー設定で無効にし、ここに書いたリポジトリでだけ有効にする。他のセッションまで同じ Bot に繋がるのを防ぐため
+typeset -gA CLAUDE_CHANNEL_REPOS=(
+  void2610-org/color-recollection "discord@claude-plugins-official"
+)
+
 claude() {
-  local root settings
-  root=$(git rev-parse --show-toplevel 2>/dev/null) || root=$PWD
-  settings="$root/.claude/settings.local.json"
+  local url repo
+  url=$(git remote get-url origin 2>/dev/null)
+  # worktree でも同じ origin を指すので、clone の場所や worktree に関わらず同じ設定になる
+  [[ $url =~ '[:/]([^/:]+/[^/]+)$' ]] && repo=${match[1]%.git}
 
-  local -a channels
-  if [[ -f $settings && ${argv[(I)--channels]} -eq 0 ]]; then
-    # Anthropic の allowlist に載る channel プラグインだけが --channels を受け付ける
-    channels=(${(f)"$(jq -r '
-      (.enabledPlugins // {}) | to_entries[]
-      | select(.value == true)
-      | select(.key | test("^(discord|telegram|imessage)@claude-plugins-official$"))
-      | "plugin:" + .key
-    ' "$settings" 2>/dev/null)"})
-  fi
-
-  if (( ${#channels} )); then
-    command claude --channels "${channels[@]}" "$@"
-  else
+  local -a plugins=(${=CLAUDE_CHANNEL_REPOS[$repo]})
+  if (( ${#plugins} == 0 || ${argv[(I)--channels]} )); then
     command claude "$@"
+    return
   fi
+
+  local settings
+  settings=$(jq -cn '{enabledPlugins: ($ARGS.positional | map({(.): true}) | add)}' --args "${plugins[@]}")
+  command claude --settings "$settings" --channels "${plugins[@]/#/plugin:}" "$@"
 }
