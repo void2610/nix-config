@@ -9,4 +9,4 @@ macOS システム設定の共通モジュール群。
 - `secrets.nix`: sops-nix による secrets 配置
 - `homebrew.nix`: Homebrew パッケージ管理（profile 別に分岐）
 - `melchior/`: Melchior 開発用 C++ ビルド依存（work のみ）
-- `claude-desktop.nix`: Claude デスクトップアプリの cask と常駐の LaunchAgent（game・server）。アプリは自己更新で終了コード 0 で終わって自分で起動し直すため、KeepAlive は異常終了だけを拾う。自己更新で起動し直した後の本体は launchd の管理外になり、次のログインで管理下に戻る
+- `claude-desktop.nix`: Claude デスクトップアプリの cask と常駐の LaunchAgent（game・server）。アプリは自己更新で終了したあと ShipIt が launchd の外で起動し直すので、本体を直接起動するだけでは更新のたびに見張りが外れる。LaunchAgent は見張りのスクリプトを動かし、本体が動いていれば待ち、いなければ起動する

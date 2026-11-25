@@ -1,21 +1,34 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   user = config.system.primaryUser;
+  app = "/Applications/Claude.app/Contents/MacOS/Claude";
+  # 自己更新で終了したアプリは ShipIt が launchd の外で起動し直すため、本体を直接起動するだけでは更新のたびに見張りが外れる。動いていれば待ち、いなければ起動する
+  watchdog = pkgs.writeShellScript "claude-desktop-watchdog" ''
+    while true; do
+      if /usr/bin/pgrep -f '^${app}( |$)' >/dev/null; then
+        /bin/sleep 30
+        continue
+      fi
+      echo "$(/bin/date '+%Y-%m-%dT%H:%M:%S%z') Claude が動いていないので起動する"
+      "${app}"
+      rc=$?
+      echo "$(/bin/date '+%Y-%m-%dT%H:%M:%S%z') Claude が終了した (終了コード $rc)"
+      # 自己更新では ShipIt が本体を差し替えてから起動し直すので、差し替え中に二重に起動しないよう待つ
+      /bin/sleep 30
+    done
+  '';
 in
 {
   # Remote Control のコンピューターとして常に Claude アプリから使えるよう、デスクトップアプリを cask で入れる。
   homebrew.casks = [ "claude" ];
 
-  # ログイン時に起動し、落ちたら起こし直す。open -a はすぐ終わり launchd が再起動を繰り返すため、本体を直接起動する
+  # ログイン時に見張りを起動する。open -a はすぐ終わり launchd が再起動を繰り返すため、見張りの中で本体を直接起動して終了を待つ
   launchd.user.agents.claude-desktop = {
     serviceConfig = {
-      ProgramArguments = [ "/Applications/Claude.app/Contents/MacOS/Claude" ];
+      ProgramArguments = [ "${watchdog}" ];
       RunAtLoad = true;
-      # 自己更新や Cmd+Q は終了コード 0 で終わる。常時 KeepAlive だと更新後に自分で起動し直した本体と launchd の起動がぶつかるので、異常終了だけを拾う
-      KeepAlive = {
-        SuccessfulExit = false;
-        Crashed = true;
-      };
+      # 見張り自体が落ちたときだけ launchd が起こし直す
+      KeepAlive = true;
       # 起動直後に落ち続けたときに再起動が詰まらないよう間隔を空ける
       ThrottleInterval = 30;
       # GUI アプリなので Aqua セッション (ログイン済みの画面) でだけ動かす
