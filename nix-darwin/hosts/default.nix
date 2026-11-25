@@ -13,6 +13,8 @@ let
         ../modules/gui-app-path.nix
         # Strix を server と同じ開発用証明書で署名する
         ../modules/apple-development-signing.nix
+        # Remote Control のコンピューターとして使うため、Claude デスクトップアプリを常駐させる
+        ../modules/claude-desktop.nix
       ];
     };
 
@@ -43,6 +45,8 @@ let
         ../modules/strix-nightly-install-server.nix
         # shinkyo の画面を Cloudflare Tunnel で公開する
         ../modules/cloudflared-server.nix
+        # Remote Control のコンピューターとして使うため、Claude デスクトップアプリを常駐させる
+        ../modules/claude-desktop.nix
       ];
     };
   };
