@@ -34,11 +34,40 @@ in
   };
 
   config = {
-    # (1) リモートログイン (sshd) を有効にする。中継エージェントは 127.0.0.1:22 へ
-    # つなぐため、sshd が止まっていると中継そのものが成立しない。
-    # nix-darwin にリモートログインの切り替えが無いため、activation で systemsetup を使う
+    # (0) quartetto の flake input を root でも取得できるようにする (FIX-17)。
+    # darwin-rebuild は root で走るため、利用ユーザーの ~/.ssh/config にある
+    # github 別名が見えず、git+ssh の取得が失敗する。鍵と接続先をシステム側の
+    # ssh_config に書くことで、前準備なしで通るようにする
+    environment.etc."ssh/ssh_config.d/050-quartetto-github.conf".text = ''
+      # quartetto の取得用。root からも読めるよう、鍵は利用ユーザーの実パスで指す
+      Host github.com
+        User git
+        IdentityFile ${homeDir}/.ssh/id_github_rsa
+        IdentitiesOnly yes
+        # root の known_hosts は空のため、利用ユーザーのものを共有して検証を通す
+        UserKnownHostsFile ${homeDir}/.ssh/known_hosts
+        StrictHostKeyChecking accept-new
+    '';
+
+    # (1) リモートログイン (sshd) を有効にする (FIX-18)。中継エージェントは
+    # 127.0.0.1:22 へつなぐため、sshd が止まっていると中継が成立しない。
+    # systemsetup -setremotelogin は権限不足で黙って失敗するため使わず、
+    # launchctl で有効にし、22番が開いたことを確かめてから終わる
     system.activationScripts.postActivation.text = lib.mkAfter ''
-      /usr/sbin/systemsetup -setremotelogin on
+      /bin/launchctl enable system/com.openssh.sshd
+      /bin/launchctl bootstrap system /System/Library/LaunchDaemons/ssh.plist 2>/dev/null || true
+      ok=0
+      for i in $(/usr/bin/seq 1 15); do
+        if /usr/bin/nc -z 127.0.0.1 22 2>/dev/null; then
+          ok=1
+          break
+        fi
+        /bin/sleep 1
+      done
+      if [ "$ok" != 1 ]; then
+        echo "quartetto-relay: sshd が 22 番で待ち受けていません" >&2
+        exit 1
+      fi
     '';
 
     # (2) CA の公開鍵を sshd が読む場所に置く。Hub が発行する証明書はこの鍵で

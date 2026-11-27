@@ -40,7 +40,7 @@
 
     # quartetto: SSH 中継エージェントの配布 (RL-10)。非公開リポジトリのため git+ssh で取る
     quartetto = {
-      url = "git+ssh://git@github/void2610/quartetto.git";
+      url = "git+ssh://git@github.com/void2610/quartetto.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
