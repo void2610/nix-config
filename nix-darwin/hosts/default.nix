@@ -15,6 +15,8 @@ let
         ../modules/apple-development-signing.nix
         # Remote Control のコンピューターとして使うため、Claude デスクトップアプリを常駐させる
         ../modules/claude-desktop.nix
+        # Tailscale SSH で外から入れるよう、GUI 版ではなく tailscaled 常駐にする。
+        ../modules/tailscale.nix
       ];
     };
 
@@ -30,8 +32,7 @@ let
       username = "shuya";
       profile = "server";
       extraModules = [
-        # server だけは GUI 版ではなく tailscaled 常駐に切り替える。
-        # Tailscale SSH を受けたい要件を work/game に漏らさないため、ホスト限定で読む。
+        # Tailscale SSH を受けるため、GUI 版ではなく tailscaled 常駐にする。
         ../modules/tailscale.nix
         ../modules/power-server.nix
         ../modules/github-runner-server.nix
