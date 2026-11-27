@@ -2,6 +2,7 @@
 // clip <パス>: テキストは中身の文字列、画像は画像データ、それ以外は Finder でコピーしたときと同じファイルとしてクリップボードへ載せる。
 ObjC.import('AppKit');
 ObjC.import('stdlib');
+ObjC.import('unistd');
 
 // UniformTypeIdentifiers は BridgeSupport を持たず ObjC.import できないため、実行時にクラスを引く。
 const UTType = $.NSClassFromString('UTType');
@@ -47,16 +48,24 @@ function conformsTo(type, identifier) {
   return !type.isNil() && type.conformsToType(UTType.typeWithIdentifier(identifier));
 }
 
+function hasNul(head) {
+  const nul = $.NSData.alloc.initWithBase64EncodedStringOptions('AA==', 0);
+  return head.rangeOfDataOptionsRange(nul, 0, $.NSMakeRange(0, head.length)).length > 0;
+}
+
+function decodeUtf8(data) {
+  const text = $.NSString.alloc.initWithDataEncoding(data, $.NSUTF8StringEncoding);
+  return text.isNil() ? null : text;
+}
+
 function readUtf8Text(path) {
   const handle = $.NSFileHandle.fileHandleForReadingAtPath(path);
   const head = handle.readDataOfLength(BINARY_SNIFF_BYTES);
   handle.closeFile;
-  const nul = $.NSData.alloc.initWithBase64EncodedStringOptions('AA==', 0);
-  if (head.rangeOfDataOptionsRange(nul, 0, $.NSMakeRange(0, head.length)).length > 0) {
+  if (hasNul(head)) {
     return null;
   }
-  const text = $.NSString.alloc.initWithDataEncoding($.NSData.dataWithContentsOfFile(path), $.NSUTF8StringEncoding);
-  return text.isNil() ? null : text;
+  return decodeUtf8($.NSData.dataWithContentsOfFile(path));
 }
 
 function writeItem(item) {
@@ -102,9 +111,40 @@ function copyFileReference(path) {
   writeItem($.NSURL.fileURLWithPath(path));
 }
 
+// 標準入力にはパスが無いため、型は拡張子ではなく中身から決め、画像は PNG / TIFF に正規化して載せる。
+function copyStdin() {
+  const data = $.NSFileHandle.fileHandleWithStandardInput.readDataToEndOfFile;
+  if (data.length === 0) {
+    fail('標準入力が空です');
+  }
+  const head = data.subdataWithRange($.NSMakeRange(0, Math.min(data.length, BINARY_SNIFF_BYTES)));
+  const text = hasNul(head) ? null : decodeUtf8(data);
+  if (text !== null) {
+    copyText(text);
+    report('標準入力のテキストをコピーしました');
+    return;
+  }
+  const image = $.NSImage.alloc.initWithData(data);
+  if (image.isNil()) {
+    fail('標準入力はテキストでも画像でもないためコピーできません');
+  }
+  const tiff = image.TIFFRepresentation;
+  const png = $.NSBitmapImageRep.imageRepWithData(tiff).representationUsingTypeProperties($.NSBitmapImageFileTypePNG, $({}));
+  const item = $.NSPasteboardItem.alloc.init;
+  item.setDataForType(png, $.NSPasteboardTypePNG);
+  item.setDataForType(tiff, $.NSPasteboardTypeTIFF);
+  writeItem(item);
+  report('標準入力の画像をコピーしました');
+}
+
 function run(argv) {
+  // 端末に繋がっていない標準入力 (パイプ・リダイレクト) だけを入力として扱い、引数なしの対話実行では待たない。
+  if (argv.length === 0 && $.isatty(0) === 0) {
+    copyStdin();
+    return;
+  }
   if (argv.length !== 1) {
-    fail('使い方: clip <パス>');
+    fail('使い方: clip <パス> / コマンド | clip');
   }
   const path = absolutePath(argv[0]);
   if (!fileManager.fileExistsAtPath(path)) {
