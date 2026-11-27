@@ -37,6 +37,12 @@
       url = "github:openclaw/nix-openclaw";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # quartetto: SSH 中継エージェントの配布 (RL-10)。非公開リポジトリのため git+ssh で取る
+    quartetto = {
+      url = "git+ssh://git@github/void2610/quartetto.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -48,6 +54,7 @@
       nix-homebrew,
       sops-nix,
       nix-openclaw,
+      quartetto,
     }:
     let
       # darwin 側は Apple Silicon Mac だけを管理対象にしている。
@@ -86,6 +93,7 @@
           nix-homebrew
           sops-nix
           nix-openclaw
+          quartetto
           commonNixpkgsConfig
           commonOverlays
           ;

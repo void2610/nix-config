@@ -189,6 +189,26 @@
         "type": "github"
       }
     },
+    "quartetto": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795802889,
+        "narHash": "sha256-Q8FUCBYDMkhElusEEZmRJd55uE6EpN+mba/QX3BS24Y=",
+        "ref": "refs/heads/main",
+        "rev": "31098cc369c4f9d3460c783cc12967f295db5ebb",
+        "revCount": 27,
+        "type": "git",
+        "url": "ssh://git@github/void2610/quartetto.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://git@github/void2610/quartetto.git"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
@@ -196,6 +216,7 @@
         "nix-homebrew": "nix-homebrew",
         "nix-openclaw": "nix-openclaw",
         "nixpkgs": "nixpkgs_2",
+        "quartetto": "quartetto",
         "sops-nix": "sops-nix"
       }
     },

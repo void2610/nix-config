@@ -17,6 +17,9 @@ let
         ../modules/claude-desktop.nix
         # Tailscale SSH で外から入れるよう、GUI 版ではなく tailscaled 常駐にする。
         ../modules/tailscale.nix
+        # quartetto の SSH 中継エージェント (RL-08)。この Mac の中継名は m5
+        ../modules/quartetto-relay.nix
+        { quartetto.relay.host = "m5"; }
       ];
     };
 
@@ -48,6 +51,9 @@ let
         ../modules/cloudflared-server.nix
         # Remote Control のコンピューターとして使うため、Claude デスクトップアプリを常駐させる
         ../modules/claude-desktop.nix
+        # quartetto の SSH 中継エージェント (RL-08)。この Mac の中継名は m1
+        ../modules/quartetto-relay.nix
+        { quartetto.relay.host = "m1"; }
       ];
     };
   };

@@ -5,6 +5,7 @@
   nix-homebrew,
   sops-nix,
   nix-openclaw,
+  quartetto,
   commonNixpkgsConfig,
   commonOverlays,
 }:
@@ -72,6 +73,8 @@ let
       inherit system;
       specialArgs = {
         profile = cfg.profile;
+        # quartetto の flake が出す中継エージェント (RL-10)。モジュールから使う
+        quartettoRelayAgent = quartetto.packages.${system}.relay-agent;
       };
       modules = [
         nixpkgsModule
