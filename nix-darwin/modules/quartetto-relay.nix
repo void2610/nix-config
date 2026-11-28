@@ -128,9 +128,7 @@ in
 
     # (5) quartetto-worker を利用ユーザーに入れる (FIX-30 (1b), R-36)。
     # ローカルの Worker セッションで W-05 などの規律を効かせるため、marketplace
-    # (void2610/quartetto) と quartetto-worker をユーザー単位で入れる。
-    # claude CLI の plugin 操作は冪等でない部分があるため、入っているかを見て
-    # 足りない分だけを実行する小さなスクリプトをログイン時に走らせる。
+    # (void2610/quartetto) の最新の quartetto-worker をログイン時にユーザー単位で入れ直す。
     # marketplace の取得は GitHub への SSH を使うため、鍵の末尾改行の修正
     # (fix-ssh-key-newline) と競合したら間を置いてやり直す。
     launchd.user.agents.quartetto-worker-plugin = {
@@ -139,18 +137,26 @@ in
           "/bin/sh"
           "-c"
           ''
-            export PATH="/opt/homebrew/bin:${homeDir}/.local/node24/bin:/usr/bin:/bin"
+            # gh は利用ユーザーのプロファイルにあり、非公開の marketplace の取得で git の認証に使う
+            export PATH="/opt/homebrew/bin:/etc/profiles/per-user/${username}/bin:${homeDir}/.local/node24/bin:/usr/bin:/bin"
             CLAUDE=/opt/homebrew/bin/claude
+            # claude.ai から同期された quartetto-worker@synced と取り違えないよう、marketplace 付きの ID で見る
+            PLUGIN=quartetto-worker@quartetto
             [ -x "$CLAUDE" ] || exit 0
             for attempt in 1 2 3 4 5; do
-              if ! "$CLAUDE" plugin marketplace list 2>/dev/null | grep -q "quartetto"; then
-                "$CLAUDE" plugin marketplace add void2610/quartetto >/dev/null 2>&1
-              fi
+              refreshed=0
               if "$CLAUDE" plugin marketplace list 2>/dev/null | grep -q "quartetto"; then
-                if ! "$CLAUDE" plugin list 2>/dev/null | grep -q "quartetto-worker"; then
-                  "$CLAUDE" plugin install quartetto-worker@quartetto >/dev/null 2>&1
+                "$CLAUDE" plugin marketplace update quartetto >/dev/null 2>&1 && refreshed=1
+              else
+                "$CLAUDE" plugin marketplace add void2610/quartetto >/dev/null 2>&1 && refreshed=1
+              fi
+              if [ "$refreshed" = 1 ]; then
+                # plugin.json の version が変わらないため plugin update は新しいコミットを取らない。入れ直して最新にする
+                if "$CLAUDE" plugin list 2>/dev/null | grep -q "$PLUGIN"; then
+                  "$CLAUDE" plugin uninstall "$PLUGIN" --scope user >/dev/null 2>&1
                 fi
-                if "$CLAUDE" plugin list 2>/dev/null | grep -q "quartetto-worker"; then
+                "$CLAUDE" plugin install "$PLUGIN" --scope user >/dev/null 2>&1
+                if "$CLAUDE" plugin list 2>/dev/null | grep -q "$PLUGIN"; then
                   exit 0
                 fi
               fi
