@@ -105,5 +105,44 @@ in
         StandardErrorPath = "${homeDir}/Library/Logs/quartetto-relay-agent.log";
       };
     };
+
+    # (5) quartetto-worker を利用ユーザーに入れる (FIX-30 (1b), R-36)。
+    # ローカルの Worker セッションで W-05 などの規律を効かせるため、marketplace
+    # (void2610/quartetto) と quartetto-worker をユーザー単位で入れる。
+    # claude CLI の plugin 操作は冪等でない部分があるため、入っているかを見て
+    # 足りない分だけを実行する小さなスクリプトをログイン時に走らせる。
+    # marketplace の取得は GitHub への SSH を使うため、鍵の末尾改行の修正
+    # (fix-ssh-key-newline) と競合したら間を置いてやり直す。
+    launchd.user.agents.quartetto-worker-plugin = {
+      serviceConfig = {
+        ProgramArguments = [
+          "/bin/sh"
+          "-c"
+          ''
+            export PATH="/opt/homebrew/bin:${homeDir}/.local/node24/bin:/usr/bin:/bin"
+            CLAUDE=/opt/homebrew/bin/claude
+            [ -x "$CLAUDE" ] || exit 0
+            for attempt in 1 2 3 4 5; do
+              if ! "$CLAUDE" plugin marketplace list 2>/dev/null | grep -q "quartetto"; then
+                "$CLAUDE" plugin marketplace add void2610/quartetto >/dev/null 2>&1
+              fi
+              if "$CLAUDE" plugin marketplace list 2>/dev/null | grep -q "quartetto"; then
+                if ! "$CLAUDE" plugin list 2>/dev/null | grep -q "quartetto-worker"; then
+                  "$CLAUDE" plugin install quartetto-worker@quartetto >/dev/null 2>&1
+                fi
+                if "$CLAUDE" plugin list 2>/dev/null | grep -q "quartetto-worker"; then
+                  exit 0
+                fi
+              fi
+              /bin/sleep 30
+            done
+            exit 0
+          ''
+        ];
+        RunAtLoad = true;
+        StandardOutPath = "${homeDir}/Library/Logs/quartetto-worker-plugin.log";
+        StandardErrorPath = "${homeDir}/Library/Logs/quartetto-worker-plugin.log";
+      };
+    };
   };
 }
