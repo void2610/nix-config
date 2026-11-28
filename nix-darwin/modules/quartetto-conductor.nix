@@ -27,7 +27,9 @@ let
     hasClaudeMdExternalIncludesWarningShown = false;
   };
 
-  startScript = pkgs.writeShellScript "quartetto-conductor-start" ''
+  # ~/Documents に触るのは macOS の /bin/bash にする。書類フォルダの保護は実行ファイルごとに許可を見るため、
+  # 同じ形 (/bin/bash で cd してから claude を exec) で動いている claude-local の LaunchAgent に合わせる
+  startScript = pkgs.writeText "quartetto-conductor-start.sh" ''
     log() { echo "$(/bin/date '+%Y-%m-%dT%H:%M:%S%z') $*"; }
 
     # 再起動の直後は sops-nix がまだトークンを置いていないことがあるため、最大 10 分待つ (FIX-28 と同じ)
@@ -75,7 +77,10 @@ in
   launchd.user.agents.quartetto-conductor = {
     serviceConfig = {
       # 起動前にトークンとクローンを待ち、フォルダの信頼を書いてから claude に置き換わる
-      ProgramArguments = [ "${startScript}" ];
+      ProgramArguments = [
+        "/bin/bash"
+        "${startScript}"
+      ];
       # ログイン時に Conductor を立ち上げる
       RunAtLoad = true;
       # Conductor は人間の唯一の窓口なので、落ちたら launchd が起こし直す
