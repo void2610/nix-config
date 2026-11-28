@@ -20,6 +20,8 @@ let
         # quartetto の SSH 中継エージェント (RL-08)。この Mac の中継名は m5
         ../modules/quartetto-relay.nix
         { quartetto.relay.host = "m5"; }
+        # Conductor が nix-config の反映を人間の手なしで行えるよう、darwin-rebuild だけをパスワードなしの sudo で許す (FIX-32)
+        ../modules/darwin-rebuild-sudo.nix
       ];
     };
 
@@ -56,6 +58,8 @@ let
         { quartetto.relay.host = "m1"; }
         # quartetto の Conductor を m1 のローカルで常駐させる (R-37、FIX-32)。中継モジュールのトークンを使う
         ../modules/quartetto-conductor.nix
+        # Conductor が nix-config の反映を人間の手なしで行えるよう、darwin-rebuild だけをパスワードなしの sudo で許す (FIX-32)
+        ../modules/darwin-rebuild-sudo.nix
       ];
     };
   };
