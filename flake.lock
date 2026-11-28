@@ -196,11 +196,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795864835,
-        "narHash": "sha256-dKh1t1d14Ck/cEgfF+uf77SWDo9Cf/6sLO6tQNKu1S0=",
+        "lastModified": 1795866082,
+        "narHash": "sha256-IH6nXz6/9jDLMd6L486kQjIQR3/s+RaOGxFrYIOQOhg=",
         "ref": "refs/heads/main",
-        "rev": "3fabf5a135117b689f5c1af4a4cbc6dfc6fe55e4",
-        "revCount": 48,
+        "rev": "919bc3b67b7e03f43e435774d3d61aa516397ce7",
+        "revCount": 60,
         "type": "git",
         "url": "ssh://git@github.com/void2610/quartetto.git"
       },

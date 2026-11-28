@@ -77,6 +77,8 @@ let
         quartettoRelayAgent = quartetto.packages.${system}.relay-agent;
         # quartetto の flake が出す qt-gui-run (FIX-27)。モジュールから使う
         quartettoQtGuiRun = quartetto.packages.${system}.qt-gui-run;
+        # quartetto の flake が出す qt-relay (FIX-32)。m1 の Conductor が m5 への ssh に使う
+        quartettoQtRelay = quartetto.packages.${system}.qt-relay;
       };
       modules = [
         nixpkgsModule
