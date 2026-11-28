@@ -27,6 +27,16 @@ let
     hasClaudeMdExternalIncludesWarningShown = false;
   };
 
+  # 同期された古い版 (モードと /qt-mode が残る) を止めて marketplace の最新版を動かす。セッションが書き換えられないようストアに置く
+  conductorSettings = pkgs.writeText "quartetto-conductor-settings.json" (
+    builtins.toJSON {
+      enabledPlugins = {
+        "quartetto-conductor@synced" = false;
+        "quartetto-conductor@quartetto" = true;
+      };
+    }
+  );
+
   # ~/Documents に触るのは macOS の /bin/bash にする。書類フォルダの保護は実行ファイルごとに許可を見るため、
   # 同じ形 (/bin/bash で cd してから claude を exec) で動いている claude-local の LaunchAgent に合わせる
   startScript = pkgs.writeText "quartetto-conductor-start.sh" ''
@@ -68,10 +78,42 @@ let
       fi
     fi
 
+    # marketplace の取得は GitHub への接続が要るため、quartetto-worker の導入 (quartetto-relay.nix) と同じく失敗したら間を置いてやり直す
+    claude=/opt/homebrew/bin/claude
+    plugin=quartetto-conductor@quartetto
+    installed() {
+      "$claude" plugin list --json 2>/dev/null |
+        ${pkgs.jq}/bin/jq -e --arg id "$plugin" '[.. | objects | select(.id? == $id and .scope? == "user")] | length > 0' >/dev/null
+    }
+    refreshed=0
+    for attempt in 1 2 3 4 5; do
+      if "$claude" plugin marketplace list 2>/dev/null | /usr/bin/grep -q "quartetto"; then
+        "$claude" plugin marketplace update quartetto >/dev/null 2>&1 && refreshed=1
+      else
+        "$claude" plugin marketplace add void2610/quartetto >/dev/null 2>&1 && refreshed=1
+      fi
+      [ "$refreshed" = 1 ] && break
+      /bin/sleep 30
+    done
+    if [ "$refreshed" = 1 ]; then
+      # plugin.json の version が変わらないため plugin update は新しいコミットを取らない。入れ直して最新にする
+      if installed; then "$claude" plugin uninstall "$plugin" --scope user >/dev/null 2>&1; fi
+      "$claude" plugin install "$plugin" --scope user >/dev/null 2>&1 || log "$plugin を入れられませんでした"
+    else
+      log "marketplace quartetto を取得できず、入っている $plugin のまま起動します"
+    fi
+    # ガードの無い Conductor を bypassPermissions で動かさないよう、最新版が無ければ起動しない
+    if ! installed; then
+      log "$plugin が入っていないため、Conductor を起動しません"
+      exit 1
+    fi
+    # 利用者単位で有効のままだと quartetto の worktree で動く Worker にも Conductor のガードが効くため、無効にして Conductor だけ --settings で有効にする
+    "$claude" plugin disable "$plugin" --scope user >/dev/null 2>&1 || true
+
     log "Conductor を起動します"
     # bash 自身は書類フォルダの中身を読めない (LaunchAgent で ls が Operation not permitted) ため、cd は claude に置き換わる直前に行う
     cd ${repoDir} || exit 1
-    exec /opt/homebrew/bin/claude remote-control --permission-mode bypassPermissions --name Conductor
+    exec "$claude" remote-control --permission-mode bypassPermissions --name Conductor --settings ${conductorSettings}
   '';
 in
 {
