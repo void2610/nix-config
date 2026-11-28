@@ -15,6 +15,8 @@ let
   # Hub への認証は中継エージェントと同じ自ホストのトークンを使い、新しい秘密を増やさない (FIX-32 (2))
   tokenPath = config.sops.secrets."quartetto_relay_token_${relay.host}".path;
   logPath = "${homeDir}/Library/Logs/quartetto-conductor.log";
+  # remote-control がフォルダごとに最後のセッションを記録する場所 (~/.claude/projects/<パスの / を - にしたもの>)
+  bridgePointer = "${homeDir}/.claude/projects/${builtins.replaceStrings [ "/" ] [ "-" ] repoDir}/bridge-pointer.json";
 
   # 信頼ダイアログが書く値そのもの。無いと remote-control のセッションが信頼の確認で止まる
   trustDefaults = builtins.toJSON {
@@ -107,13 +109,17 @@ let
       log "$plugin が入っていないため、Conductor を起動しません"
       exit 1
     fi
-    # 利用者単位で有効のままだと quartetto の worktree で動く Worker にも Conductor のガードが効くため、無効にして Conductor だけ --settings で有効にする
-    "$claude" plugin disable "$plugin" --scope user >/dev/null 2>&1 || true
+    # 前回のセッションの記録が残っていると、アーカイブ済みのセッションにつなぎ直そうとして起動に失敗する
+    if [ -f ${bridgePointer} ]; then
+      /bin/mv ${bridgePointer} "${bridgePointer}.bak-$(/bin/date +%s)"
+      log "前回のセッションの記録を退避しました"
+    fi
 
     log "Conductor を起動します"
     # bash 自身は書類フォルダの中身を読めない (LaunchAgent で ls が Operation not permitted) ため、cd は claude に置き換わる直前に行う
     cd ${repoDir} || exit 1
-    exec "$claude" remote-control --permission-mode bypassPermissions --name Conductor --settings ${conductorSettings}
+    # --spawn session が無いと人間のアプリにフォルダが出ず、セッションを始められない
+    exec "$claude" remote-control --permission-mode bypassPermissions --spawn session --name Conductor --settings ${conductorSettings}
   '';
 in
 {
