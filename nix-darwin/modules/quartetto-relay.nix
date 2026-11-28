@@ -5,6 +5,7 @@
   config,
   lib,
   quartettoRelayAgent,
+  quartettoQtGuiRun,
   ...
 }:
 let
@@ -144,5 +145,14 @@ in
         StandardErrorPath = "${homeDir}/Library/Logs/quartetto-worker-plugin.log";
       };
     };
+
+    # (6) qt-gui-run を利用ユーザーの ~/.local/bin に置く (FIX-27)。
+    # claude-local の start が GUI セッションでの起動をこの補助スクリプトに
+    # 寄せており (tools/qt-gui-run)、SSH から決まったパスで呼べる必要がある。
+    # 本体は quartetto の flake が出す実行ファイル
+    system.activationScripts.postActivation.text = lib.mkAfter ''
+      /bin/mkdir -p ${homeDir}/.local/bin
+      /bin/ln -sf ${quartettoQtGuiRun}/bin/qt-gui-run ${homeDir}/.local/bin/qt-gui-run
+    '';
   };
 }

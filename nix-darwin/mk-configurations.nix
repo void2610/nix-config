@@ -75,6 +75,8 @@ let
         profile = cfg.profile;
         # quartetto の flake が出す中継エージェント (RL-10)。モジュールから使う
         quartettoRelayAgent = quartetto.packages.${system}.relay-agent;
+        # quartetto の flake が出す qt-gui-run (FIX-27)。モジュールから使う
+        quartettoQtGuiRun = quartetto.packages.${system}.qt-gui-run;
       };
       modules = [
         nixpkgsModule
