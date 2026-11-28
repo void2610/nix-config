@@ -49,7 +49,6 @@ let
       /bin/sleep 300
       exit 1
     fi
-    cd ${repoDir} || exit 1
 
     # ~/.claude.json は動いている他の claude も書き換えるため、信頼済みなら触らず、書くときは一時ファイルから置き換える
     claude_json=${homeDir}/.claude.json
@@ -70,6 +69,8 @@ let
     fi
 
     log "Conductor を起動します"
+    # bash 自身は書類フォルダの中身を読めない (LaunchAgent で ls が Operation not permitted) ため、cd は claude に置き換わる直前に行う
+    cd ${repoDir} || exit 1
     exec /opt/homebrew/bin/claude remote-control --permission-mode bypassPermissions --name Conductor
   '';
 in
