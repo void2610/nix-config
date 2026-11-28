@@ -118,9 +118,9 @@ in
         "/bin/sh"
         "-c"
         ''
-          # sops-nix の secret 配置と race するため、最大 30 秒ポーリングで待つ。
+          # sops-nix の secret 配置と race するため、最大 10 分ポーリングで待つ (FIX-28)。
           i=0
-          while [ "$i" -lt 30 ] && [ ! -e /run/secrets/ssh_id_github_rsa ]; do
+          while [ "$i" -lt 600 ] && [ ! -e /run/secrets/ssh_id_github_rsa ]; do
             /bin/sleep 1
             i=$((i+1))
           done

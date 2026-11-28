@@ -97,8 +97,22 @@ in
     # 落ちたときも launchd が起こし直し、Hub への外向き接続を保ち続ける
     launchd.user.agents.quartetto-relay-agent = {
       serviceConfig = {
-        # 本体は quartetto の flake が出す実行ファイル (RL-10)
-        ProgramArguments = [ "${quartettoRelayAgent}/bin/quartetto-relay-agent" ];
+        # 本体は quartetto の flake が出す実行ファイル (RL-10)。
+        # FIX-28: 再起動の直後は sops-nix がまだトークンを置いていないことが
+        # あるため、起動スクリプトでも最大 10 分待ってから本体を起動する
+        # (本体側でも待つが、launchd の再起動の繰り返しを避けるため二重に備える)
+        ProgramArguments = [
+          "/bin/sh"
+          "-c"
+          ''
+            i=0
+            while [ ! -e ${config.sops.secrets.${tokenSecret}.path} ] && [ "$i" -lt 600 ]; do
+              /bin/sleep 1
+              i=$((i+1))
+            done
+            exec ${quartettoRelayAgent}/bin/quartetto-relay-agent
+          ''
+        ];
         RunAtLoad = true;
         KeepAlive = true;
         EnvironmentVariables = {
