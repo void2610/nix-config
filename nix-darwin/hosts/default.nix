@@ -54,6 +54,8 @@ let
         # quartetto の SSH 中継エージェント (RL-08)。この Mac の中継名は m1
         ../modules/quartetto-relay.nix
         { quartetto.relay.host = "m1"; }
+        # quartetto の Conductor を m1 のローカルで常駐させる (R-37、FIX-32)。中継モジュールのトークンを使う
+        ../modules/quartetto-conductor.nix
       ];
     };
   };
