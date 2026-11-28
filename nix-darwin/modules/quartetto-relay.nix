@@ -58,7 +58,7 @@ in
       /bin/launchctl enable system/com.openssh.sshd
       /bin/launchctl bootstrap system /System/Library/LaunchDaemons/ssh.plist 2>/dev/null || true
       ok=0
-      for i in $(/usr/bin/seq 1 15); do
+      for _ in $(/usr/bin/seq 1 15); do
         if /usr/bin/nc -z 127.0.0.1 22 2>/dev/null; then
           ok=1
           break
