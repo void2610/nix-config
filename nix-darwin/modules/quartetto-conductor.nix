@@ -97,7 +97,17 @@ let
       [ "$refreshed" = 1 ] && break
       /bin/sleep 30
     done
-    if [ "$refreshed" = 1 ]; then
+    # 入れ直しは同じ Mac で動いている claude から $.tool.register のツールを外すため、起動のやり直しのたびには行わない
+    installed_sha() {
+      ${pkgs.jq}/bin/jq -r --arg id "$plugin" '.plugins[$id][]? | select(.scope == "user") | .gitCommitSha // empty' \
+        ${homeDir}/.claude/plugins/installed_plugins.json 2>/dev/null
+    }
+    marketplace_sha() {
+      ${pkgs.git}/bin/git -C ${homeDir}/.claude/plugins/marketplaces/quartetto rev-parse HEAD 2>/dev/null
+    }
+    if [ "$refreshed" = 1 ] && installed && [ -n "$(marketplace_sha)" ] && [ "$(installed_sha)" = "$(marketplace_sha)" ]; then
+      :
+    elif [ "$refreshed" = 1 ]; then
       # plugin.json の version が変わらないため plugin update は新しいコミットを取らない。入れ直して最新にする
       if installed; then "$claude" plugin uninstall "$plugin" --scope user >/dev/null 2>&1; fi
       "$claude" plugin install "$plugin" --scope user >/dev/null 2>&1 || log "$plugin を入れられませんでした"
